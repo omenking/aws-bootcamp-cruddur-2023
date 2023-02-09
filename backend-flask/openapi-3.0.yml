@@ -1,0 +1,241 @@
+openapi: '3.0.2'
+info:
+  title: Cruddur Backend API
+  version: '1.0'
+    
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /api/activities/home:
+    get:
+      description: 'Return a feed of activity based on all users'
+      tags:
+        - activities
+      responses:
+        '200':
+          description: Returns an array of activities"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+  /api/activities/search:
+    get:
+      description: 'Return a feed of activity based on a search term'
+      tags:
+        - activities
+      parameters:
+        - name: term
+          in: query
+          description: Search term used for full text search
+          required: true
+          schema:
+            type: string
+            example: "#100DaysOfCloud"
+      responses:
+        '200':
+          description: Returns an array of activities"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+  /api/activities:
+    post:
+      description: Create a new activitiy eg. Creating a Crud
+      tags:
+        - activities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                handle:
+                  type: string
+                message:
+                  type: string
+                ttl:
+                  type: string
+      responses:
+        '200':
+          description: Returns a recently created activity"
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Activity'
+  /api/activities/@{handle}:
+    get:
+      description: 'Return a feed of activity for a specific user'
+      tags:
+        - activities
+      parameters:
+        - name: handle
+          in: path
+          description: Handle (aka Username)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns an array of activities"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+  /api/message_groups:
+    get:
+      description: 'Return a list of two way private conversations for the user'
+      tags:
+        - messages
+      responses:
+        '200':
+          description: Returns an array of messages groups for a specific user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageGroup'
+  /api/messages/@{handle}:
+    get:
+      description: 'Returns private communication between two users'
+      tags:
+        - messages
+      parameters:
+        - name: handle
+          in: path
+          description: Handle (aka Username)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns an array of messages between two users
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Message'
+  /api/messages:
+    post:
+      description: 'Create a direct message between two users'
+      tags:
+        - messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_receiver_handle:
+                  type: string
+      responses:
+        '200':
+          description: Return a single message
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    Activity:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: 0056a369-4618-43a4-ad88-e7c371bf5582
+        display_name:
+          type: string
+          example: "Andrew Brown"
+        handle:
+          type: string
+          example: "andrewbrown"
+        message:
+          type: string
+          example: "Who likes pineapple on their pizza?"
+        replies_count:
+          type: integer
+          example: 5
+        reposts_count:
+          type: integer
+          example: 2
+        likes_count:
+          type: integer
+          example: 103
+        created_at:
+          type: string
+          example: "2023-02-06T18:11:03+00:00"
+        expires_at:
+          type: string
+          example: "2023-02-06T18:11:03+00:00"
+    Reply:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: 0056a369-4618-43a4-ad88-e7c371bf5582
+        reply_to_activity_uuid:
+          type: string
+          example: 0056a369-4618-43a4-ad88-e7c371bf5582
+        handle:
+          type: string
+          example: "andrewbrown"
+        message:
+          type: string
+          example: "Who likes pineapple on their pizza?"
+        replies_count:
+          type: integer
+          example: 5
+        reposts_count:
+          type: integer
+          example: 2
+        likes_count:
+          type: integer
+          example: 103
+        created_at:
+          type: string
+          example: "2023-02-06T18:11:03+00:00"
+
+    Message:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: 0056a369-4618-43a4-ad88-e7c371bf5582
+        display_name:
+          type: string
+          example: "Andrew Brown"
+        handle:
+          type: string
+          example: "andrewbrown"
+        message:
+          type: string
+          example: "Who likes pineapple on their pizza?"
+        created_at:
+          type: string
+          example: "2023-02-06T18:11:03+00:00"
+    MessageGroup:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: 0056a369-4618-43a4-ad88-e7c371bf5582
+        display_name:
+          type: string
+          example: "Worf"
+        handle:
+          type: string
+          example: "worf"
