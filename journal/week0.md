@@ -117,3 +117,22 @@ Check your email and confirm the subscription
 aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
 ```
 
+## Create an AWS Budget
+
+[aws budgets create-budget](https://docs.aws.amazon.com/cli/latest/reference/budgets/create-budget.html)
+
+Get your AWS Account ID
+```sh
+aws sts get-caller-identity --query Account --output text
+```
+
+- Supply your AWS Account ID
+- Update the json files
+- This is another case with AWS CLI its just much easier to json files due to lots of nested json
+
+```sh
+aws budgets create-budget \
+    --account-id AccountID \
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/budget-notifications-with-subscribers.json
+```
