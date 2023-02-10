@@ -94,6 +94,14 @@ docker run -p 4567:4567 -it backend-flask
 
 ## Containerize Frontend
 
+## Run NPM Install
+
+We have to run NPM Install before building the container since it needs to copy the contents of node_modules
+
+```
+cd frontend-react-js
+npm i
+```
 ### Create Docker File
 
 Create a file here: `frontend-react-js/Dockerfile`
