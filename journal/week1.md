@@ -116,7 +116,7 @@ docker image rm backend-flask --force
 ### Overriding Ports
 
 ```sh
-PORT=8080 docker run -p 4567:4567 -it backend-flask
+FLASK_ENV=production PORT=8080 docker run -p 4567:4567 -it backend-flask
 ```
 
 > Look at Dockerfile to see how ${PORT} is interpolated
@@ -131,6 +131,7 @@ We have to run NPM Install before building the container since it needs to copy 
 cd frontend-react-js
 npm i
 ```
+
 ### Create Docker File
 
 Create a file here: `frontend-react-js/Dockerfile`
@@ -156,7 +157,7 @@ docker build -t frontend-react-js ./rontend-react-js
 ### Run Container
 
 ```sh
-docker run -p 3000:3000 -it frontend-react-js
+docker run -p 3000:3000 -d frontend-react-js
 ```
 
 ## Multiple Containers
@@ -236,4 +237,24 @@ services:
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
+```
+
+## Volumes
+
+directory volume mapping
+
+```sh
+volumes: 
+- "./docker/dynamodb:/home/dynamodblocal/data"
+```
+
+named volume mapping
+
+```sh
+volumes: 
+  - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local
 ```
