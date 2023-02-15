@@ -34,4 +34,15 @@ I was able to resolve the error by closing command prompt, and opening it again.
 
 ![Proof of Working AWS CLI](assets/proof-of-aws-cli.png)
 
+### Create a Budget
+
+I created my own Budget for $1 because I cannot afford any kind of spend.
+I did not create a second Budget because I was concerned of budget spending going over the 2 budget free limit.
+
+![Image of The Budget Alarm I Created](assets/budget-alarm.png) 
+
+### Recreate Logical Architectural Deisgn
+
+![Cruddur Logical Design](assets/logical-architecture-recreation-diagram.png)
+
 ## Homework Challenges
