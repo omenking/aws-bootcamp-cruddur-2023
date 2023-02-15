@@ -48,4 +48,7 @@ I did not create a second Budget because I was concerned of budget spending goin
 [Lucid Charts Share Link](https://lucid.app/lucidchart/c6d54586-0334-44ab-95cb-d11772edcace/edit?viewport_loc=-259%2C144%2C2219%2C1161%2C0_0&invitationId=inv_19e0767b-5aa5-49ec-bccd-f220b9163d2f
 )
 
-## Homework Challenges
+## Example of Referncing a file in the codebase
+
+Example of me of referencing a file in my repo
+[week-1-again/aws/json/alarm-config.jso](https://github.com/omenking/aws-bootcamp-cruddur-2023/blob/week-1-again/aws/json/alarm-config.json)
