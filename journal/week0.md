@@ -45,4 +45,7 @@ I did not create a second Budget because I was concerned of budget spending goin
 
 ![Cruddur Logical Design](assets/logical-architecture-recreation-diagram.png)
 
+[Lucid Charts Share Link](https://lucid.app/lucidchart/c6d54586-0334-44ab-95cb-d11772edcace/edit?viewport_loc=-259%2C144%2C2219%2C1161%2C0_0&invitationId=inv_19e0767b-5aa5-49ec-bccd-f220b9163d2f
+)
+
 ## Homework Challenges
