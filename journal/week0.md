@@ -2,7 +2,7 @@
 
 ## Required Homework/Tasks
 
-### Install AWS CLI
+### Install and Verify AWS CLI 
 
 I was not able to use Gitpod or Github Codespaces due to browser issues.
 So I decided to use a local enviroment.
@@ -14,7 +14,7 @@ I did the following steps to install AWS CLI.
 
 I installed the AWS CLI via command in **Command Prompt**:
 
-**Note to insert Image** 
+![Installing AWS CLI](assets/installing-windows-aws-cli.png)
 
 ```
 msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
@@ -30,6 +30,6 @@ operable program or batch file.
 
 I was able to resolve the error by closing command prompt, and opening it again.
 
-**Note to insert Image** 
+![Proof of Working AWS CLI](assets/proof-of-aws-cli.png)
 
 ## Homework Challenges
