@@ -20,7 +20,7 @@ https://code.visualstudio.com/docs/containers/overview
 
 Create a file here: `backend-flask/Dockerfile`
 
-```sh
+```dockerfile
 FROM python:3.10-slim-buster
 
 WORKDIR /backend-flask
@@ -136,7 +136,7 @@ npm i
 
 Create a file here: `frontend-react-js/Dockerfile`
 
-```sh
+```dockerfile
 FROM node:16.18
 
 ENV PORT=3000
@@ -204,7 +204,7 @@ Lets integrate the following into our existing docker compose file:
 
 ### Postgres
 
-```sh
+```yaml
 services:
   db:
     image: postgres:13-alpine
@@ -223,7 +223,7 @@ volumes:
 
 ### DynamoDB Local
 
-```sh
+```yaml
 services:
   dynamodb-local:
     # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
@@ -243,14 +243,14 @@ services:
 
 directory volume mapping
 
-```sh
+```yaml
 volumes: 
 - "./docker/dynamodb:/home/dynamodblocal/data"
 ```
 
 named volume mapping
 
-```sh
+```yaml
 volumes: 
   - db:/var/lib/postgresql/data
 
