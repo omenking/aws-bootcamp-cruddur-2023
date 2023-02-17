@@ -2,7 +2,7 @@
 
 ## References
 
-Good Article for Debugging Connection Refued
+Good Article for Debugging Connection Refused
 https://pythonspeed.com/articles/docker-connection-refused/
 
 
@@ -83,7 +83,7 @@ docker logs backend-flask -f
 docker logs $CONTAINER_ID -f
 ```
 
-###  BusyBox can be used to debug adjacent containers 
+###  Debugging  adjacent containers with other containers
 
 ```sh
 docker run --rm -it curlimages/curl "-X GET http://localhost:4567/api/activities/home -H \"Accept: application/json\" -H \"Content-Type: application/json\""
