@@ -7,3 +7,4 @@ https://lucid.app/lucidchart/3f9fdf2d-54d1-468c-bd7d-5545c18c2e0b/edit?invitatio
 
 ## Logical Diagram
 ![Logical Diagram](./assets/week0_logical_diagram.png)
+https://lucid.app/lucidchart/263990d4-45a2-474a-b889-4d1cffc30a81/edit?viewport_loc=-541%2C37%2C3388%2C1580%2C0_0&invitationId=inv_c148ab35-28d5-4b7f-bf0e-e301d4952a0e
