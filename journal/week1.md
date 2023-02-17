@@ -166,7 +166,7 @@ docker run -p 3000:3000 -d frontend-react-js
 
 Create `docker-compose.yml` at the root of your project.
 
-```sh
+```yaml
 version: "3.8"
 services:
   backend-flask:
