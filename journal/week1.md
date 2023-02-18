@@ -245,6 +245,17 @@ volumes:
     driver: local
 ```
 
+To install the postgres client into Gitpod
+
+```sh
+  - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev
+```
+
 ### DynamoDB Local
 
 ```yaml
@@ -262,6 +273,9 @@ services:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
 ```
+
+Example of using DynamoDB local
+https://github.com/100DaysOfCloud/challenge-dynamodb-local
 
 ## Volumes
 
