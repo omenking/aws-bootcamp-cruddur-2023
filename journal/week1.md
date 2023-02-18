@@ -5,7 +5,6 @@
 Good Article for Debugging Connection Refused
 https://pythonspeed.com/articles/docker-connection-refused/
 
-
 ## VSCode Docker Extension
 
 Docker for VSCode makes it easy to work with Docker
@@ -44,17 +43,20 @@ docker build -t  backend-flask ./backend-flask
 
 ### Run Container
 
-Run 
+Run
+
 ```sh
 docker run --rm -p 4567:4567 -it backend-flask
 ```
 
 Run in background
+
 ```sh
 docker container run --rm -p 4567:4567 -d backend-flask
 ```
 
 Return the container id into an Env Vat
+
 ```sh
 CONTAINER_ID=$(docker run --rm -p 4567:4567 -d backend-flask)
 ```
@@ -67,7 +69,6 @@ CONTAINER_ID=$(docker run --rm -p 4567:4567 -d backend-flask)
 docker ps
 docker images
 ```
-
 
 ### Send Curl to Test Server
 
@@ -83,7 +84,7 @@ docker logs backend-flask -f
 docker logs $CONTAINER_ID -f
 ```
 
-###  Debugging  adjacent containers with other containers
+### Debugging adjacent containers with other containers
 
 ```sh
 docker run --rm -it curlimages/curl "-X GET http://localhost:4567/api/activities/home -H \"Accept: application/json\" -H \"Content-Type: application/json\""
@@ -151,7 +152,7 @@ CMD ["npm", "start"]
 ### Build Container
 
 ```sh
-docker build -t frontend-react-js ./rontend-react-js
+docker build -t frontend-react-js .
 ```
 
 ### Run Container
@@ -189,7 +190,7 @@ services:
 
 # the name flag is a hack to change the default prepend folder
 # name when outputting the image names
-networks: 
+networks:
   internal-network:
     driver: bridge
     name: cruddur
@@ -213,8 +214,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     ports:
-      - '5432:5432'
-    volumes: 
+      - "5432:5432"
+    volumes:
       - db:/var/lib/postgresql/data
 volumes:
   db:
@@ -244,14 +245,14 @@ services:
 directory volume mapping
 
 ```yaml
-volumes: 
-- "./docker/dynamodb:/home/dynamodblocal/data"
+volumes:
+  - "./docker/dynamodb:/home/dynamodblocal/data"
 ```
 
 named volume mapping
 
 ```yaml
-volumes: 
+volumes:
   - db:/var/lib/postgresql/data
 
 volumes:
