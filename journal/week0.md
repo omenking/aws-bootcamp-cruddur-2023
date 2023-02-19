@@ -12,14 +12,14 @@ aws-cli/2.10.1 Python/3.9.11 Linux/6.0.12-76060006-generic exe/x86_64.pop.22 pro
 ![image](https://user-images.githubusercontent.com/123283155/219908859-28a07902-363b-4101-af61-cd40e57e54b3.png)
 ![image](https://user-images.githubusercontent.com/123283155/219909101-07c6b9fd-72b7-455e-a6c9-e63369ba5eee.png)
 
-## Created Lucid Charts 
+### Created Lucid Charts 
 
 Followed the Videos and created Lucid Charts and **updated** Lucid Charts video
 ![image](https://user-images.githubusercontent.com/123283155/219923075-f59dda72-5588-4970-ab33-0a541e5c8548.png)
 
 https://lucid.app/lucidchart/8e54479a-349e-4ff0-9722-ed89dae8723f/edit?viewport_loc=-126%2C140%2C2994%2C1320%2C0_0&invitationId=inv_f7aa0a05-deab-4d58-ba71-cea8a7be5042
 
-## Setup AWS Budget and Billing Accounts
+### Setup AWS Budget and Billing Accounts
 
 Went through AWS CloudShell to get the following JSON on my budget:
 ![image](https://user-images.githubusercontent.com/123283155/219910296-5d15b9da-90ea-4363-9ef9-d6354bc3403d.png)
