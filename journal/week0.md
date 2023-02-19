@@ -15,5 +15,43 @@ aws-cli/2.10.1 Python/3.9.11 Linux/6.0.12-76060006-generic exe/x86_64.pop.22 pro
 ## Created Lucid Charts 
 
 Followed the Videos and created Lucid Charts and **updated** Lucid Charts video
-https://github.com/ivorypalace224/aws-bootcamp-cruddur-2023/blob/main/journal/assets/Architecting%20and%20Billing.png
+![image](/asset/"Architecting and Billing.png")
 
+## Setup AWS Budget and Billing Accounts
+
+Went through AWS CloudShell to get the following JSON on my budget:
+![image](https://user-images.githubusercontent.com/123283155/219910296-5d15b9da-90ea-4363-9ef9-d6354bc3403d.png)
+
+Then performed the same within the AWS CLI:
+![image](https://user-images.githubusercontent.com/123283155/219911457-8e649193-17f5-42f2-9fee-612698ff4c6c.png)
+
+Here is the information for my Billing Alarms from AWS:
+{
+    "Type": "AWS::CloudWatch::Alarm",
+    "Properties": {
+        "AlarmName": "Billing Alert",
+        "ActionsEnabled": true,
+        "OKActions": [],
+        "AlarmActions": [
+            "arn:aws:sns:us-east-1:218164361575:Default_CloudWatch_Alarms_Topic"
+        ],
+        "InsufficientDataActions": [],
+        "MetricName": "AWS BootCamp Billing Alert",
+        "Namespace": "AWS/Billing",
+        "Statistic": "Maximum",
+        "Dimensions": [
+            {
+                "Name": "Currency",
+                "Value": "USD"
+            }
+        ],
+        "Period": 21600,
+        "EvaluationPeriods": 1,
+        "DatapointsToAlarm": 1,
+        "Threshold": 10,
+        "ComparisonOperator": "GreaterThanThreshold",
+        "TreatMissingData": "missing"
+    }
+}
+
+Here is the information gathered from CLI:
