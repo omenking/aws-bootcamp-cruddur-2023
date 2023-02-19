@@ -15,5 +15,5 @@ aws-cli/2.10.1 Python/3.9.11 Linux/6.0.12-76060006-generic exe/x86_64.pop.22 pro
 ## Created Lucid Charts 
 
 Followed the Videos and created Lucid Charts and **updated** Lucid Charts video
-
+https://github.com/ivorypalace224/aws-bootcamp-cruddur-2023/blob/main/journal/assets/Architecting%20and%20Billing.png
 
