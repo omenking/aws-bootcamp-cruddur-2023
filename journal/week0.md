@@ -16,6 +16,7 @@ aws-cli/2.10.1 Python/3.9.11 Linux/6.0.12-76060006-generic exe/x86_64.pop.22 pro
 
 Followed the Videos and created Lucid Charts and **updated** Lucid Charts video
 ![image](/asset/"Architecting and Billing.png")
+![image](https://user-images.githubusercontent.com/123283155/219923075-f59dda72-5588-4970-ab33-0a541e5c8548.png)
 
 ## Setup AWS Budget and Billing Accounts
 
