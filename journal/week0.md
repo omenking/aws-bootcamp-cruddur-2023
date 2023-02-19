@@ -53,5 +53,3 @@ Here is the information for my Billing Alarms from AWS:
         "TreatMissingData": "missing"
     }
 }
-
-Here is the information gathered from CLI:
