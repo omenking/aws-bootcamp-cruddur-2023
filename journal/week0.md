@@ -14,6 +14,6 @@ aws-cli/2.10.1 Python/3.9.11 Linux/6.0.12-76060006-generic exe/x86_64.pop.22 pro
 
 ## Created Lucid Charts 
 
-Followed the Videos and created Lucid Charts and updated Lucid Charts video
+Followed the Videos and created Lucid Charts and **updated** Lucid Charts video
 
 
