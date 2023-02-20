@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 // [TODO] Authenication
 import Cookies from 'js-cookie'
 
-export default function SignupPage() {
+export default const SignupPage = () => {
 
   // Username is Eamil
   const [name, setName] = React.useState('');
