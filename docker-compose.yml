@@ -1,5 +1,15 @@
 version: "3.8"
 services:
+  xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "us-east-1"
+    command:
+      - '-o'
+    ports:
+      - 2000:2000/udp
   backend-flask:
     environment:
       FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
