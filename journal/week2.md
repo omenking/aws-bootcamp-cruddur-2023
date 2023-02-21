@@ -51,9 +51,10 @@ Add `aws/json/xray.json`
 ```
 
 ```sh
+export FLASK_ADDRESS="https://4567-omenking-awsbootcampcru-tja7ueva7u2.ws-us87.gitpod.io"
 aws xray create-group \
    --group-name "Cruddur" \
-   --filter-expression "service(\"5000-examproco-awsbootcampcr-wr5qqbjldpa.ws-us85.gitpod.io\") {fault OR error}"
+   --filter-expression "service(\"$FLASK_ADDRESS\") {fault OR error}"
 ```
 
 ```sh
