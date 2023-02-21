@@ -51,14 +51,14 @@ Add `aws/json/xray.json`
 ```
 
 ```sh
-export FLASK_ADDRESS="https://4567-omenking-awsbootcampcru-tja7ueva7u2.ws-us87.gitpod.io"
+FLASK_ADDRESS="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
 aws xray create-group \
    --group-name "Cruddur" \
    --filter-expression "service(\"$FLASK_ADDRESS\") {fault OR error}"
 ```
 
 ```sh
-aws xray create-sampling-rule --cli-input-json file://aws/xray/xray.json
+aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
 ```
 
  [Install X-ray Daemon](https://docs.aws.amazon.com/xray/latest/devguide/xray-daemon.html)
@@ -72,11 +72,20 @@ aws xray create-sampling-rule --cli-input-json file://aws/xray/xray.json
  sudo dpkg -i **.deb
  ```
 
-### Start X-ray daemon
+### Add Deamon Service to Docker Compose
 
- ```sh
- xray -o -n us-east-1
- ```
+```yml
+  xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "us-east-1"
+    command:
+      - '-o'
+    ports:
+      - 2000:2000/udp
+```
 
 ### Check service data for last 10 minutes
 
