@@ -82,9 +82,16 @@ aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       AWS_REGION: "us-east-1"
     command:
-      - '-o'
+      - "xray -o -b xray-daemon:2000"
     ports:
       - 2000:2000/udp
+```
+
+We need to add these two env vars to our backend-flask in our `docker-compose.yml` file
+
+```yml
+      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
 ```
 
 ### Check service data for last 10 minutes
