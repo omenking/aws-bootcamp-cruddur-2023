@@ -23,9 +23,13 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 # AWS X-Ray -------
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+#from aws_xray_sdk.core import xray_recorder
+#from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
+# Rollbar -----
+import rollbar
+import rollbar.contrib.flask
+from flask import got_request_exception
 
 # HoneyComb -------
 # Initialize tracing and an exporter that can send data to Honeycomb
@@ -37,15 +41,14 @@ tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
-
 # HoneyComb -------
 FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 
 # AWS X-Ray -------
-xray_url = os.getenv("AWS_XRAY_URL")
-xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
-XRayMiddleware(app, xray_recorder)
+#xray_url = os.getenv("AWS_XRAY_URL")
+#xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
+#XRayMiddleware(app, xray_recorder)
 
 
 frontend = os.getenv('FRONTEND_URL')
@@ -58,6 +61,28 @@ cors = CORS(
   allow_headers="content-type,if-modified-since",
   methods="OPTIONS,GET,HEAD,POST"
 )
+
+@app.route('/rollbar/test')
+def rollbar_test():
+    rollbar.report_message('Hello World!', 'warning')
+    return "Hello World!"
+
+rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+@app.before_first_request
+def init_rollbar():
+    """init rollbar module"""
+    rollbar.init(
+        # access token
+        rollbar_access_token,
+        # environment name
+        'production',
+        # server root directory, makes tracebacks prettier
+        root=os.path.dirname(os.path.realpath(__file__)),
+        # flask already sets up logging
+        allow_logging_basic_config=False)
+
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
