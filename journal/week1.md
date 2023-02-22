@@ -113,10 +113,10 @@ docker logs $CONTAINER_ID -f
 docker run --rm -it curlimages/curl "-X GET http://localhost:4567/api/activities/home -H \"Accept: application/json\" -H \"Content-Type: application/json\""
 ```
 
-busybosy is often used for debugging since it install a bunch of thing
+busybox is often used for debugging since it install a bunch of thing
 
 ```sh
-docker run --rm -it busybosy
+docker run --rm -it busybox
 ```
 
 ### Gain Access to a Container
