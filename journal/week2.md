@@ -5,6 +5,11 @@
 ### Instrument AWS X-Ray for Flask
 
 
+```sh
+export AWS_REGION="ca-central-1"
+gp env AWS_REGION="ca-central-1"
+```
+
 Add to the `requirements.txt`
 
 ```py
@@ -217,13 +222,13 @@ LOGGER.info('Hello Cloudwatch! from  /api/activities/home')
 Set the env var in your backend-flask for `docker-compose.yml`
 
 ```yml
-      AWS_REGION: "${AWS_REGION}"
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
 ```
 
-```sh
-export AWS_REGION="ca-central-1"
-gp env AWS_REGION="ca-central-1"
-```
+> passing AWS_REGION doesn't seems to get picked up by boto3 so pass default region instead
+
 
 ## Rollbar
 
