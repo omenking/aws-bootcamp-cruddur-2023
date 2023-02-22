@@ -10,3 +10,5 @@ opentelemetry-instrumentation-requests
 
 blinker
 rollbar
+
+watchtower
