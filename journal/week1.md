@@ -5,7 +5,7 @@ Followed the checklist and completed without much problem
 3. Forgot to commit the changes and make the port public sometimes and still familiarizing my self with gitpod
 
 Extra
-1. Play with synk and try to use it to scan his current repository
-
+1. Play with Synk and try to use it to scan his current repository
+2. add health check to UI in docker compose.
 
 
