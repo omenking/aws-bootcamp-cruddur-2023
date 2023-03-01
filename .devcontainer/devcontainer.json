@@ -9,8 +9,14 @@
 		"vscode": {
 			"extensions": [
 				"ms-azuretools.vscode-docker",
-				"ms-python.python"
-			]
+				"ms-python.python",
+				"dracula-theme.theme-dracula",
+				"vscodevim.vim"
+			],
+			"settings": {
+				"terminal.integrated.fontSize": 20,
+				"editor.fontSize": 14
+			}
 		}
 	}
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
