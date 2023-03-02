@@ -14,7 +14,6 @@
    [Lucidchart Link](https://lucid.app/lucidchart/d435e356-e576-428c-8abd-39ae4522374a/edit?invitationId=inv_0e61e914-b561-49b1-8f42-1f8495406c28) **(contains both diagrams)**
 
  - Enable MFA
- - Created a budget alarm to monitor spending
 
  - Install AWS CLI on Linux
 
@@ -36,6 +35,14 @@ gp env EMAIL_ADDRESS="Test@***.com"
 ```
 $ aws sts get-caller-identity
 ```
+ - Create a budget alarm to monitor spending
+ 
+  ![Create Budget](Week0/3.%20Create%20Budget.png) 
+
+ - Create a Billing alarm 
+ 
+  ![Billing Alarm](Week0/4.%20Billing%20Alarm.png) 
+  
  - Subscribe to SNS Topic 
 
  ```
@@ -44,7 +51,8 @@ $ aws sts get-caller-identity
     --protocol=email \
     --notification-endpoint=$EMAIL_ADDRESS
  ```
-  ![Logical Diagram](Week0/1.%20Subscribe%20to%20SNS%20Topic.png) 
+  ![Subscribe to SNS Topic](Week0/1.%20Subscribe%20to%20SNS%20Topic.png) 
 
-  ![Logical Diagram](Week0/2.%20Confirm%20SNS%20Topic.png) 
+  ![Confirm Topic](Week0/2.%20Confirm%20SNS%20Topic.png) 
+  
 
