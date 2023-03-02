@@ -35,7 +35,14 @@ gp env EMAIL_ADDRESS="Test@***.com"
 ```
 $ aws sts get-caller-identity
 ```
- - Create a budget alarm to monitor spending
+ - Create a Budget alarm to monitor spending
+
+  ```
+aws budgets create-budget \
+    --account-id $ACCOUNT_ID \
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/notifications-with-subscribers.json
+ ```
  
   ![Create Budget](Week0/3.%20Create%20Budget.png) 
 
@@ -43,7 +50,7 @@ $ aws sts get-caller-identity
  
   ![Billing Alarm](Week0/4.%20Billing%20Alarm.png) 
   
- - Subscribe to SNS Topic 
+ - Subscribe to SNS Topic
 
  ```
  aws sns subscribe \
