@@ -3,7 +3,7 @@
         "Amount": "1",
         "Unit": "USD"
     },
-    "BudgetName": "Example Tag Budget",
+    "BudgetName": "My AWS Bootcamp Budget",
     "BudgetType": "COST",
     "CostFilters": {
         "TagKeyValue": [
