@@ -10,3 +10,6 @@ In week2, tried adding trace to the backend-flask
 
 ## Rollbar
 ![Rollbar](./assets/rollbar.png)
+
+## Honeycomb UI
+![Frontend](./assets/frontend.png)
