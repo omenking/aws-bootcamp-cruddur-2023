@@ -10,6 +10,11 @@ import ReplyForm from '../components/ReplyForm';
 // [TODO] Authenication
 import Cookies from 'js-cookie'
 
+// honeycomb tracing
+import { trace, context, } from '@opentelemetry/api';
+
+
+
 export default function HomeFeedPage() {
   const [activities, setActivities] = React.useState([]);
   const [popped, setPopped] = React.useState(false);
@@ -47,6 +52,18 @@ export default function HomeFeedPage() {
   };
 
   React.useEffect(()=>{
+
+    // const tracer = trace.getTracer();
+    // console.log("testing 123");
+    // const rootSpan = tracer.startActiveSpan('document_load', span => {
+    //   //start span when navigating to page
+    //   span.setAttribute('pageUrlwindow', window.location.href);
+    //   // ... do loading things
+    //     // ... attach timing information
+    //   span.end(); //once page is loaded, end the span
+      
+    // });
+
     //prevents double call
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
