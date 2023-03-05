@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@honeycombio/opentelemetry-node": "^0.3.2",
+    "@opentelemetry/auto-instrumentations-node": "^0.36.3"
+  }
+}
