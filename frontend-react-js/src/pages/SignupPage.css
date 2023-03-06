@@ -47,7 +47,7 @@ article.signup-article input[type='password'] {
   resize: none;
   width: 100%;
   padding: 16px;
-  border: solid 1px #555555;
+  border: solid 1px var(--field-border);
   background: #1f1f1f;
   color: #fff;
 }
@@ -64,7 +64,7 @@ article.signup-article input[type='password'] {
 
 article.signup-article input[type='text']:focus ,
 article.signup-article input[type='password']:focus {
-  border: solid 1px rgb(149,0,255,1);
+  border: solid 1px var(--field-border-focus);
 }
 
 article.signup-article .submit {
