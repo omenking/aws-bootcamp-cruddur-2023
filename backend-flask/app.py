@@ -22,10 +22,21 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
 
+#X-ray
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+
+
+
 #Honey tracing 
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
 provider.add_span_processor(processor)
+
+#X-ray
+xray_url = os.getenv("AWS_XRAY_URL")
+xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
+
 
 #LogComment
 simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
@@ -36,6 +47,7 @@ tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
+XRayMiddleware(app, xray_recorder)
 #Honey 
 FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
@@ -125,7 +137,7 @@ def data_activities():
 
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
 def data_show_activity(activity_uuid):
-  data = ShowActivity.run(activity_uuid=activity_uuid)
+  data = ShowActivities.run(activity_uuid=activity_uuid)
   return data, 200
 
 @app.route("/api/activities/<string:activity_uuid>/reply", methods=['POST','OPTIONS'])
