@@ -1,4 +1,4 @@
-FROM node:16.18-alpine
+FROM node:16.19.1-alpine
 
 ENV PORT=3000
 
