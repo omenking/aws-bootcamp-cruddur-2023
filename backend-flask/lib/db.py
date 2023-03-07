@@ -16,9 +16,12 @@ def query_wrap_array(template):
   '''
 
 connection_url = os.getenv("CONNECTION_URL")
-print("============")
-print("============")
-print("============")
+print("===")
+print("===")
+print("===")
 print(connection_url)
+print("===")
+print("===")
+print("===")
 pool = ConnectionPool(connection_url)
 
