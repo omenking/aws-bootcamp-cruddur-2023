@@ -266,4 +266,25 @@ LABEL="db-schema-load"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 ```
 
-## Update Activities Home
+## Install Postgres Client
+
+We need to set the env var for our backend-flask application:
+
+```yml
+  backend-flask:
+    environment:
+      CONNECTION_URL: "${CONNECTION_URL}"
+```
+
+https://www.psycopg.org/psycopg3/
+
+We'll add the following to our `requirments.txt`
+
+```
+psycopg[binary]
+psycopg[pool]
+```
+
+```
+pip install -r requirements.txt
+```
