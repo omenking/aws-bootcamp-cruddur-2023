@@ -1,5 +1,7 @@
 # Week 4 — Postgres and RDS
 
+https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
+
 To connect to psql via the psql client cli tool remember to use the host flag to specific localhost.
 
 ```
