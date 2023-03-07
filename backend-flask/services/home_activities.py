@@ -16,23 +16,25 @@ class HomeActivities:
       sql = query_wrap_array("""
       SELECT
         activities.uuid,
-        activities.user_uuid,
+        users.display_name,
+        users.handle,
         activities.message,
         activities.replies_count,
         activities.reposts_count,
         activities.likes_count,
         activities.reply_to_activity_uuid,
         activities.expires_at,
-        activities.created_at,
+        activities.created_at
       FROM public.activities
-      ORDER BY activities.id
+      LEFT JOIN public.users ON users.uuid = activities.user_uuid
+      ORDER BY activities.created_at DESC
       """)
       print("########==========")
       print(sql)
       with pool.connection() as conn:
-        conn.execute(sql)
-        json = con.fetchone()
-        print(json)
-
-      span.set_attribute("app.result_length", len(results))
-      return results
+        with conn.cursor() as cur:
+          cur.execute(sql)
+          # this will return a tuple
+          # the first field being the data
+          json = cur.fetchone()
+      return json[0]
