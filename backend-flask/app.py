@@ -184,6 +184,11 @@ def data_notifications():
   data = NotificationsActivities.run()
   return data, 200
 
+@app.route("/api/activities/notifications", methods=['GET'])
+def data_notifications():
+  data = NotificationsActivities.run()
+  return data, 200
+
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
 @xray_recorder.capture('activities_users')
 def data_handle(handle):
