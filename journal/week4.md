@@ -1,6 +1,5 @@
 # Week 4 — Postgres and RDS
 
-https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
 To connect to psql via the psql client cli tool remember to use the host flag to specific localhost.
 
@@ -11,6 +10,7 @@ psql -Upostgres --host localhost
 Common PSQL commands:
 
 ```sql
+\x on -- expanded display when looking at data
 \q -- Quit PSQL
 \l -- List all databases
 \c database_name -- Connect to a specific database
@@ -221,3 +221,49 @@ psql $NO_DB_CONNECTION_URL cruddur < $schema_path
 ```
 
 ## Shell script to load the seed data
+
+```
+#! /usr/bin/bash
+
+#echo "== db-schema-load"
+
+
+schema_path="$(realpath .)/db/schema.sql"
+
+echo $schema_path
+
+psql $CONNECTION_URL cruddur < $schema_path
+```
+
+## Easily setup (reset) everything for our database
+
+
+```sh
+#! /usr/bin/bash
+-e # stop if it fails at any point
+
+#echo "==== db-setup"
+
+bin_path="$(realpath .)/bin"
+
+source "$bin_path/db-drop"
+source "$bin_path/db-create"
+source "$bin_path/db-schema-load"
+source "$bin_path/db-seed"
+```
+
+## Make prints nicer
+
+We we can make prints for our shell scripts coloured so we can see what we're doing:
+
+https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
+
+
+```sh
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-schema-load"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+```
+
+## Update Activities Home
