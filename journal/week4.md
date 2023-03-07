@@ -25,3 +25,197 @@ INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...); -- 
 UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; -- Update data in a table
 DELETE FROM table_name WHERE condition; -- Delete data from a table
 ```
+
+## Create (and dropping) our database
+
+We can use the createdb command to create our database:
+
+https://www.postgresql.org/docs/current/app-createdb.html
+
+```
+createdb cruddur -h localhost -U postgres
+```
+
+```sh
+psql -U postgres -h localhost
+```
+
+```sql
+\l
+DROP database cruddur;
+```
+
+We can create the database within the PSQL client
+
+```sql
+CREATE database cruddur;
+```
+
+## Import Script
+
+We'll create a new SQL file called `schema.sql`
+and we'll place it in `backend-flask/db`
+
+The command to import:
+```
+psql cruddur < db/schema.sql -h localhost -U postgres
+```
+
+
+## Add UUID Extension
+
+We are going to have Postgres generate out UUIDs.
+We'll need to use an extension called:
+
+```sql
+CREATE EXTENSION "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
+
+## Create our tables
+
+https://www.postgresql.org/docs/current/sql-createtable.html
+
+```sql
+CREATE TABLE public.users (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  display_name text,
+  handle text
+  cognito_user_id text,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+```
+
+```sql
+CREATE TABLE public.activities (
+  uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  message text NOT NULL,
+  replies_count integer DEFAULT 0,
+  reposts_count integer DEFAULT 0,
+  likes_count integer DEFAULT 0,
+  reply_to_activity_uuid integer,
+  expires_at TIMESTAMP,
+  created_at TIMESTAMP default current_timestamp NOT NULL
+);
+```
+
+```sql
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.activities;
+```
+
+# https://aviyadav231.medium.com/automatically-updating-a-timestamp-column-in-postgresql-using-triggers-98766e3b47a0
+
+```sql
+DROP FUNCTION IF EXISTS func_updated_at();
+CREATE FUNCTION func_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+```
+
+```sql
+CREATE TRIGGER trig_users_updated_at 
+BEFORE UPDATE ON users 
+FOR EACH ROW EXECUTE PROCEDURE func_updated_at();
+CREATE TRIGGER trig_activities_updated_at 
+BEFORE UPDATE ON activities 
+FOR EACH ROW EXECUTE PROCEDURE func_updated_at();
+```
+
+```sql
+DROP TRIGGER IF EXISTS trig_users_updated_at ON users;
+DROP TRIGGER IF EXISTS trig_activities_updated_at ON activities;
+```
+
+## Shell Script to Connect to DB
+
+For things we commonly need to do we can create a new directory called `bin`
+
+We'll create an new folder called `bin` to hold all our bash scripts.
+
+```sh
+mkdir /workspace/aws-bootcamp-cruddur-2023/backend-flask/bin
+```
+
+```sh
+export CONNECTION_URL="postgresql://postgres:pssword@127.0.0.1:5433/cruddur"
+```
+
+We'll create a new bash script `bin/db-connect`
+
+```sh
+#! /usr/bin/bash
+
+psql $CONNECTION_URL
+```
+
+We'll make it executable:
+
+```sh
+chmod u+x bin/db-connect
+```
+
+To execute the script:
+```sh
+./bin/db-connect
+```
+
+## Shell script to drop the database
+
+`bin/db-drop`
+
+```sh
+#! /usr/bin/bash
+
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "DROP database cruddur;"
+```
+
+https://askubuntu.com/questions/595269/use-sed-on-a-string-variable-rather-than-a-file
+
+## See what connections we are using
+
+```sh
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "select pid as process_id, \
+       usename as user,  \
+       datname as db, \
+       client_addr, \
+       application_name as app,\
+       state \
+from pg_stat_activity;"
+```
+
+> We could have idle connections left open by our Database Explorer extension, try disconnecting and checking again the sessions 
+
+## Shell script to create the database
+
+`bin/db-create`
+
+```sh
+#! /usr/bin/bash
+
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+createdb cruddur $NO_DB_CONNECTION_URL
+```
+
+## Shell script to load the schema
+
+`bin/db-schema-load`
+
+```sh
+#! /usr/bin/bash
+
+schema_path="$(realpath .)/db/schema.sql"
+
+echo $schema_path
+
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL cruddur < $schema_path
+```
+
+## Shell script to load the seed data

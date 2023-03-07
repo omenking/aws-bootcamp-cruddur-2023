@@ -1,0 +1,11 @@
+#! /usr/bin/bash
+
+echo "== db-seed"
+
+seed_path="$(realpath .)/db/seed.sql"
+
+echo $seed_path
+
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+
+psql $NO_DB_CONNECTION_URL cruddur < $seed_path
