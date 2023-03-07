@@ -26,8 +26,22 @@
    ![Snyk Report](Week1/Snyk%20Report.png)
 
  -  Critical Vulnerabilities Fixed (e.g., Upgrade node:16.18-alpine to FROM node:16.19.1-alpine)
+ 
    ![Fix Critical Vulnerabilities](Week1/Fix%20Critical%20Vulnerabilities.png) 
 
- -  Test frontend 
+ -  Running Backend Locally
+   <br />
+   In cURL, we can use or pipe the json_pp to pretty print the JSON output.
+
+   ```
+   curl http://127.0.0.1:4567/api/activities/home | json_pp
+   ```
+   
+   ![BackEnd App Running 1](Week1/BackEnd%20App%20Running%201.png)
+   
+   ![BackEnd App Running 2](Week1/BackEnd%20App%20Running%202.png)
+   
+   
+ -  Test Frontend 
 
    ![FrontEnd Running](Week1/FrontEnd%20Running.png)
