@@ -47,8 +47,8 @@ article.signin-article input[type='password'] {
   resize: none;
   width: 100%;
   padding: 16px;
-  border: solid 1px #555555;
-  background: #1f1f1f;
+  border: solid 1px var(--field-border);
+  background: var(--field-bg);
   color: #fff;
 }
 
@@ -58,7 +58,7 @@ article.signin-article input[type='password'] {
 
 article.signin-article input[type='text']:focus ,
 article.signin-article input[type='password']:focus {
-  border: solid 1px rgb(149,0,255,1);
+  border: solid 1px var(--field-border-focus);
 }
 
 article.signin-article .submit {

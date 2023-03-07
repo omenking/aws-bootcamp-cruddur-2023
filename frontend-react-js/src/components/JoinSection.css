@@ -1,7 +1,7 @@
 .join {
   display: flex;
   flex-direction: column;
-  background: #000;
+  background: var(--fg);
   border-radius: 8px;
   margin-top: 24px;
 }
