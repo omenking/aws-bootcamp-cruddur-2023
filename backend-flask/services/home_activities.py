@@ -29,7 +29,6 @@ class HomeActivities:
       LEFT JOIN public.users ON users.uuid = activities.user_uuid
       ORDER BY activities.created_at DESC
       """)
-      print("########==========")
       print(sql)
       with pool.connection() as conn:
         with conn.cursor() as cur:
