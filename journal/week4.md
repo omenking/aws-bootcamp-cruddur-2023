@@ -145,6 +145,7 @@ mkdir /workspace/aws-bootcamp-cruddur-2023/backend-flask/bin
 
 ```sh
 export CONNECTION_URL="postgresql://postgres:pssword@127.0.0.1:5433/cruddur"
+gp env CONNECTION_URL="postgresql://postgres:pssword@127.0.0.1:5433/cruddur"
 ```
 
 We'll create a new bash script `bin/db-connect`
@@ -402,3 +403,48 @@ aws ec2 modify-security-group-rules \
 ```
 
 https://docs.aws.amazon.com/cli/latest/reference/ec2/modify-security-group-rules.html#examples
+
+## Test remote access
+
+We'll create a connection url:
+
+```
+postgresql://root:huEE33z2Qvl383@cruddur-db-instance.czz1cuvepklc.ca-central-1.rds.amazonaws.com:5433/cruddur
+```
+
+We'll test that it works in Gitpod:
+
+```sh
+psql postgresql://root:huEE33z2Qvl383@cruddur-db-instance.czz1cuvepklc.ca-central-1.rds.amazonaws.com:5432/cruddur
+```
+
+We'll update your URL for production use case
+
+```sh
+export PROD_CONNECTION_URL="postgresql://root:huEE33z2Qvl383@cruddur-db-instance.czz1cuvepklc.ca-central-1.rds.amazonaws.com:5432/cruddur"
+gp env PROD_CONNECTION_URL="postgresql://root:huEE33z2Qvl383@cruddur-db-instance.czz1cuvepklc.ca-central-1.rds.amazonaws.com:5432/cruddur"
+```
+
+## Update Bash scripts for production
+
+```sh
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+else
+  echo "Running in development mode"
+fi
+```
+
+We'll update:
+- db-connect
+- db-schema-load
+
+## Update Gitpod IP on new env var
+
+We'll add a command step for postgres:
+
+```sh
+    command: |
+      export GITPOD_IP=$(curl ifconfig.me)
+      source "$THEIA_WORKSPACE_ROOT/backend-flask/db-update-sg-rule"
+```
