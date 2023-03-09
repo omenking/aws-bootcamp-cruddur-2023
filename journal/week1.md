@@ -31,7 +31,14 @@
    ![Fix Critical Vulnerabilities](Week1/Fix%20Critical%20Vulnerabilities.png) 
 
  -  Running Backend Locally
-   <br />
+   ```
+   cd backend-flask
+   export FRONTEND_URL="*"
+   export BACKEND_URL="*"
+   pip install -r requirements.txt
+   python3 -m flask run --host=0.0.0.0 --port=4567
+   ```
+   
    In cURL, we can use or pipe the json_pp to pretty print the JSON output.
 
    ```
@@ -42,7 +49,12 @@
    
    ![BackEnd App Running 2](Week1/BackEnd%20App%20Running%202.png)
    
- -  Test Frontend 
+ -  Run Frontend Locally
+   ```
+   cd frontend-react-js
+   npm i
+   npm start
+   ```
 
    ![FrontEnd Running](Week1/FrontEnd%20Running.png)
    
