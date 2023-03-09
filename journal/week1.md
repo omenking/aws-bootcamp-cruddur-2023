@@ -58,7 +58,7 @@
 
    ![FrontEnd Running](Week1/FrontEnd%20Running.png)
    
-   Create two Dockerfile(s) for Frontend and Backend then build the images with the following commands:-
+-  Create two Dockerfile(s) for Frontend and Backend then build the images with the following commands:-
    
    ```
    docker build -t  backend-flask:latest ./backend-flask
