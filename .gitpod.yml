@@ -9,7 +9,7 @@ tasks:
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
 
-  # To install postgres client on gitpod
+# To install postgres client on gitpod
   - name: postgres
     init: |
       curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
@@ -26,10 +26,12 @@ vscode:
   extensions:
     - 42Crunch.vscode-openapi
 
+    - cweijan.vscode-postgresql-client2
+
 ports:
   - name: frontend
     port: 3000
-    # onOpen: open-browser
+# onOpen: open-browser
     visibility: public
   - name: backend
     port: 4567
