@@ -73,12 +73,13 @@ tracer = trace.get_tracer(__name__)
 app = Flask(__name__)
 
 # ROLLBAR --------
+rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
 @app.before_first_request
 def init_rollbar():
     """init rollbar module"""
     rollbar.init(
         # access token
-        'rollbar_access_token',
+        rollbar_access_token,
         # environment name
         'production',
         # server root directory, makes tracebacks prettier
@@ -122,7 +123,7 @@ def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
 
-@app.route("/api/message_groups", methods=['GET']
+@app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
     user_handle = 'andrewbrown'
     model = MessageGroups.run(user_handle=user_handle)
