@@ -15,6 +15,8 @@ from services.create_message import *
 from services.show_activity import *
 from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 
+from flask_http_middleware import MiddlewareManager, BaseHTTPMiddleware
+
 # HoneyComb ---- import
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -63,6 +65,22 @@ trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
+
+## auth
+
+class AccessMiddleware(BaseHTTPMiddleware):
+    def __init__(self):
+        super().__init__()
+
+    def dispatch(self, request, call_next):
+        if request.headers.get("token") == "secret":
+            return call_next(request)
+        else:
+            return jsonify({"message":"invalid token"})
+
+app.wsgi_app = MiddlewareManager(app)
+app.wsgi_app.add_middleware(AccessMiddleware)
+
 
 # X-Ray ----------
 # xray_url = os.getenv("AWS_XRAY_URL")
