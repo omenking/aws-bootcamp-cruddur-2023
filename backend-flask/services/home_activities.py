@@ -52,6 +52,7 @@ class HomeActivities:
       }
       ]
 
+  
       if cognito_user_id != None:
         extra_crud = {
           'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
@@ -62,7 +63,7 @@ class HomeActivities:
           'likes': 1042,
           'replies': []
         }
-      results.insert(0,extra_crud)
+        results.insert(0,extra_crud)
       
       span.set_attribute("app.result_length", len(results))
 
