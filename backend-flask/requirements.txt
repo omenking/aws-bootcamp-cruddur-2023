@@ -15,4 +15,4 @@ blinker
 rollbar
 
 Flask-AWSCognito
-flask_http_middleware 
+flask-http-middleware
