@@ -41,7 +41,7 @@
     blinker
     rollbar
    ```
-   
+
    ![Fix ROLLBAR_ACCESS_TOKEN error](Week2/Fix%20ROLLBAR_ACCESS_TOKEN%20error.png) 
 
 
@@ -50,5 +50,3 @@
    [aws-xray-sdk-python](https://github.com/aws/aws-xray-sdk-python)<br />
    [OpenTelemetry for Python](https://docs.honeycomb.io/getting-data-in/opentelemetry/python/)<br />
    [What Honeycomb.io team is this? Test Honeycomb API Key](http://honeycomb-whoami.glitch.me/)<br />
-
-   
