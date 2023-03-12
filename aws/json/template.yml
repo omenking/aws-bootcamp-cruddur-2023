@@ -1,0 +1,9 @@
+aws budgets create-budget \
+    --account-id $ACCOUNT_ID \
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/notifications-with-subscribers.json
+
+aws sns subscribe \
+    --topic-arn="arn:aws:sns:us-east-1:**********" \
+    --protocol=email \
+    --notification-endpoint=$EMAIL_ADDRESS
