@@ -7,10 +7,11 @@ opentelemetry-exporter-otlp-proto-http
 opentelemetry-instrumentation-flask
 opentelemetry-instrumentation-requests
 
+# AWS X-ray
 aws-xray-sdk
-#CloudWatch
+# CloudWatch
 watchtower
 
-#Rollbar
+# Rollbar
 blinker
 rollbar
