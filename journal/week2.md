@@ -10,7 +10,8 @@
    
 # Tasks completed
 
- - Cloud Watch Logs
+ - CloudWatch Logs
+ 
    Add the following package to backend-flask/requirements.txt
    ```
     watchtower
@@ -24,6 +25,7 @@
    ![CloudWatch Log groups 2](Week2/CloudWatch%20Log%20groups%202.png)
    
  - Implement AWS X-ray 
+
    Add the following package to backend-flask/requirements.txt
    ```
     aws-xray-sdk
@@ -36,12 +38,12 @@
    ![Xray AWS CLI](Week2/Xray%20AWS%20CLI.png) 
  
  - Implement Rollbar
+ 
    Add the following package to backend-flask/requirements.txt
    ```
     blinker
     rollbar
    ```
-
    ![Fix ROLLBAR_ACCESS_TOKEN error](Week2/Fix%20ROLLBAR_ACCESS_TOKEN%20error.png) 
 
 
