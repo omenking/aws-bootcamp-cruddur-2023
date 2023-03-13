@@ -1,0 +1,5 @@
+#! /usr/bin/bash
+
+aws dynamodb delete-table  \
+  --table-name cruddur-messages \
+  --endpoint-url "http://localhost:8000"

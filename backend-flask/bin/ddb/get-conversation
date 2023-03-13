@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+
+import boto3
+import sys
+import json
+
+
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+  if "prod" in sys.argv[1]:
+    attrs = {}
+
+dynamodb = boto3.client('dynamodb',**attrs)
+table_name = 'cruddur-messages'
+
+# define the query parameters
+query_params = {
+  'TableName': table_name,
+  'KeyConditionExpression': 'pk = :pkey',
+  'ExpressionAttributeValues': {
+    ':pkey': {'S': 'MSG_GROUP#1'}
+  }
+}
+
+# query the table
+response = dynamodb.query(**query_params)
+
+# print the items returned by the query
+items = response['Items']
+print(json.dumps(items, sort_keys=True, indent=2))
