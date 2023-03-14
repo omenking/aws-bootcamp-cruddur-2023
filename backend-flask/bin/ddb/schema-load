@@ -16,10 +16,12 @@ table_name = 'cruddur-messages'
 
 # define the schema for the table
 table_schema = {
-  'AttributeDefinitions': [{
-      'AttributeName': 'data',
-      'AttributeType': 'S'
-    },{
+  'AttributeDefinitions': [
+    #{
+    #  'AttributeName': 'data',
+    #  'AttributeType': 'S'
+    #},
+    {
       'AttributeName': 'pk',
       'AttributeType': 'S'
     },{
@@ -39,24 +41,24 @@ table_schema = {
   'ProvisionedThroughput': {
       'ReadCapacityUnits': 5,
       'WriteCapacityUnits': 5
-  },
-  'GlobalSecondaryIndexes':[{
-    'IndexName':'data-sk-index',
-    'KeySchema':[{
-      'AttributeName': 'data',
-      'KeyType': 'HASH'
-    },{
-      'AttributeName': 'sk',
-      'KeyType': 'RANGE'
-    }],
-    'Projection': {
-      'ProjectionType': 'ALL'
-    },
-    'ProvisionedThroughput': {
-      'ReadCapacityUnits': 5,
-      'WriteCapacityUnits': 5
-    },
-  }]
+  }#,
+  #'GlobalSecondaryIndexes':[{
+  #  'IndexName':'data-sk-index',
+  #  'KeySchema':[{
+  #    'AttributeName': 'data',
+  #    'KeyType': 'HASH'
+  #  },{
+  #    'AttributeName': 'sk',
+  #    'KeyType': 'RANGE'
+  #  }],
+  #  'Projection': {
+  #    'ProjectionType': 'ALL'
+  #  },
+  #  'ProvisionedThroughput': {
+  #    'ReadCapacityUnits': 5,
+  #    'WriteCapacityUnits': 5
+  #  },
+  #}]
 }
 
 # create the table
