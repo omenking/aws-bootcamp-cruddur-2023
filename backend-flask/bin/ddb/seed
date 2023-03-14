@@ -4,9 +4,10 @@ import boto3
 import sys
 from datetime import datetime, timedelta, timezone
 import uuid
+import os
 
 current_path = os.path.dirname(os.path.abspath(__file__))
-parent_path = os.path.abspath(os.path.join(current_path, '..'))
+parent_path = os.path.abspath(os.path.join(current_path, '..', '..'))
 sys.path.append(parent_path)
 from lib.db import db
 
@@ -29,20 +30,22 @@ def get_user_uuids():
     WHERE
       users.handle IN(
         %(my_handle)s,
-        %(other_handle)s,
+        %(other_handle)s
         )
   """
-  json = db.query_array_json(sql,{
-    my_handle:  'andrewbrown',
-    other_handle: 'bayko'
+  users = db.query_array_json(sql,{
+    'my_handle':  'andrewbrown',
+    'other_handle': 'bayko'
   })
-  users = json.loads(json)
   my_user    = next((item for item in users if item["handle"] == 'andrewbrown'), None)
   other_user = next((item for item in users if item["handle"] == 'bayko'), None)
-  return {
+  results = {
     'my_user': my_user,
     'other_user': other_user
   }
+  print('get_user_uuids')
+  print(results)
+  return results
 
 
 def create_message_group(client,message_group_uuid, my_user_uuid, last_message_at=None, message=None, other_user_uuid=None, other_user_display_name=None, other_user_handle=None):
@@ -212,8 +215,7 @@ Person 1: And Zathras was just one example of that. He was a small but important
 Person 2: Definitely. I think his character is a great example of the show's ability to balance humor and heart, and to create memorable and beloved characters that fans will cherish for years to come.
 """
 
-lines = conversation.split('\n')
-
+lines = conversation.lstrip('\n').rstrip('\n').split('\n')
 for i in range(len(lines)):
   if lines[i].startswith('Person 1: '):
     key = 'my_user'
@@ -221,6 +223,9 @@ for i in range(len(lines)):
   elif lines[i].startswith('Person 2: '):
     key = 'other_user'
     message = lines[i].replace('Person 2: ', '')
+  else:
+    print(lines[i])
+    raise 'invalid line'
 
   created_at = (now + timedelta(minutes=i)).isoformat()
   create_message(
