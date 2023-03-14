@@ -8,7 +8,7 @@ class Ddb:
   def client():
     endpoint_url = os.getenv("AWS_ENDPOINT_URL")
     if endpoint_url:
-      attrs = { 'endpoint_url': 'http://localhost:8000' }
+      attrs = { 'endpoint_url': endpoint_url }
     else:
       attrs = {}
     dynamodb = boto3.client('dynamodb',**attrs)
@@ -22,7 +22,7 @@ class Ddb:
       'ScanIndexForward': False,
       'Limit': 20,
       'ExpressionAttributeValues': {
-        'pkey': {'S': f"GRP#{my_user_uuid}"}
+        ':pkey': {'S': f"GRP#{my_user_uuid}"}
       }
     }
     print('query-params')
@@ -44,6 +44,8 @@ class Ddb:
         'message': item['message']['S'],
         'created_at': last_sent_at
       })
+    return results
+
   def list_messages(client,message_group_uuid):
     table_name = 'cruddur-messages'
     query_params = {
@@ -69,6 +71,7 @@ class Ddb:
         'message': item['message']['S'],
         'created_at': created_at
       })
+    return results
   # creates message_group and message
   def create_message_group(client, message,my_user_uuid, my_user_display_name, my_user_handle, other_user_uuid, other_user_display_name, other_user_handle):
     table_name = 'cruddur-messages'
@@ -83,9 +86,9 @@ class Ddb:
       'sk': {'S': last_message_at},
       'message_group_uuid': {'S': message_group_uuid},
       'message': {'S': message},
-      'other_user_uuid': {'S': other_user_uuid},
-      'other_user_display_name': {'S': other_user_display_name},
-      'other_user_handle':  {'S': other_user_handle}
+      'user_uuid': {'S': other_user_uuid},
+      'user_display_name': {'S': other_user_display_name},
+      'user_handle':  {'S': other_user_handle}
     }
 
     message = {

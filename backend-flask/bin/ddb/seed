@@ -53,16 +53,12 @@ def create_message_group(client,message_group_uuid, my_user_uuid, last_message_a
   record = {
     'pk':   {'S': f"GRP#{my_user_uuid}"},
     'sk':   {'S': last_message_at},
-    'message_group_uuid': {'S': message_group_uuid}
+    'message_group_uuid': {'S': message_group_uuid},
+    'message':  {'S': message},
+    'user_uuid': {'S': other_user_uuid},
+    'user_display_name': {'S': other_user_display_name},
+    'user_handle': {'S': other_user_handle}
   }
-  if message != None:
-    record['message'] = {'S': message}
-  if other_user_uuid != None:
-    record['user_uuid'] = {'S': other_user_uuid}
-  if other_user_display_name != None:
-    record['user_display_name'] = {'S': other_user_display_name}
-  if other_user_handle != None:
-    record['user_handle'] = {'S': other_user_handle}
 
   response = client.put_item(
     TableName=table_name,
@@ -93,20 +89,29 @@ def create_message(client,message_group_uuid, created_at, message, my_user_uuid,
 message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399" #str(uuid.uuid4())
 users = get_user_uuids()
 
+now = datetime.now(timezone.utc).astimezone()
+
 create_message_group(
   client=dynamodb,
   message_group_uuid=message_group_uuid,
   my_user_uuid=users['my_user']['uuid'],
-  last_message_at='INIT'
+  other_user_uuid=users['other_user']['uuid'],
+  other_user_handle=users['other_user']['handle'],
+  other_user_display_name=users['other_user']['display_name'],
+  last_message_at=now.isoformat(),
+  message="this is a filler message"
 )
+
 create_message_group(
   client=dynamodb,
   message_group_uuid=message_group_uuid,
   my_user_uuid=users['other_user']['uuid'],
-  last_message_at='INIT'
+  other_user_uuid=users['my_user']['uuid'],
+  other_user_handle=users['my_user']['handle'],
+  other_user_display_name=users['my_user']['display_name'],
+  last_message_at=now.isoformat(),
+  message="this is a filler message"
 )
-
-now = datetime.now(timezone.utc).astimezone()
 
 conversation = """
 Person 1: Have you ever watched Babylon 5? It's one of my favorite TV shows!
