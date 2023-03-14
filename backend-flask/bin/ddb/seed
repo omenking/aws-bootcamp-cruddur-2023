@@ -31,15 +31,15 @@ def create_conversation(client,message_user_group_uuid, my_user_uuid, last_messa
   )
   print(response)
 
-def create_message(client,message_group_uuid, created_at, message, sender_uuid, sender_display_name, sender_handle):
+def create_message(client,message_group_uuid, created_at, message, other_user_uuid, other_user_display_name, other_user_handle):
   # Entity # Message Group Id
   record = {
     'pk':   {'S': f"MSG#{message_group_uuid}"},
     'sk':   {'S': created_at },
-    'data': {'S': message},
-    'sender_uuid': {'S': sender_uuid},
-    'sender_display_name': {'S': sender_display_name},
-    'sender_handle': {'S': sender_handle}
+    'message': {'S': message},
+    'other_user_uuid': {'S': sender_uuid},
+    'other_user_display_name': {'S': sender_display_name},
+    'other_user_handle': {'S': sender_handle}
   }
   # insert the record into the table
   table_name = 'cruddur-messages'
@@ -59,9 +59,9 @@ def brown_message(client,timestamp,message):
     message_group_uuid= message_group_uuid,
     created_at=timestamp,
     message=message,
-    sender_uuid=sender_uuid,
-    sender_display_name='Andrew Brown',
-    sender_handle='brown'
+    other_user_uuid=sender_uuid,
+    other_user_display_name='Andrew Brown',
+    other_user_handle='brown'
   )
 
 def bayko_message(client,timestamp,message):
@@ -73,9 +73,9 @@ def bayko_message(client,timestamp,message):
     message_group_uuid= message_group_uuid,
     created_at=timestamp,
     message=message,
-    sender_uuid=sender_uuid,
-    sender_display_name='Andrew Bayko',
-    sender_handle='bayko'
+    other_user_uuid=sender_uuid,
+    other_user_display_name='Andrew Bayko',
+    other_user_handle='bayko'
   )
 
 message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399" #str(uuid.uuid4())
@@ -89,8 +89,15 @@ other_user_handle = "bayko"
 
 create_conversation(
   client=dynamodb,
-  message_user_group_uuid= "5ae290ed-55d1-47a0-bc6d-fe2bc2700399", 
-  my_user_uuid= "2aa1c49c-669a-47b0-9177-37efe9e420c4"
+  message_user_group_uuid=message_group_uuid,
+  my_user_uuid=my_user_uuid,
+  last_message_at='INIT'
+)
+create_conversation(
+  client=dynamodb,
+  message_user_group_uuid=message_group_uuid,
+  my_user_uuid=other_user_uuid,
+  last_message_at='INIT'
 )
 
 print("My User UUID")
