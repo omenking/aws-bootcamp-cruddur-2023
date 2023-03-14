@@ -32,8 +32,8 @@ class CreateMessage:
       json = db.query_array_json(sql)
       users = json.loads(json)
 
-      my_user    = next((item for item in dicts if item["handle"] == user_sender_handle), None)
-      other_user = next((item for item in dicts if item["handle"] == user_receiver_handle), None)
+      my_user    = next((item for item in users if item["handle"] == user_sender_handle), None)
+      other_user = next((item for item in users if item["handle"] == user_receiver_handle), None)
 
       ddb = Ddb.client()
 
