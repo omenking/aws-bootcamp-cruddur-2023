@@ -3,7 +3,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 import uuid
 
-class DDb:
+class Ddb:
   def client():
     endpoint_url = os.getenv("AWS_ENDPOINT_URL")
     if endpoint_url:
@@ -11,7 +11,58 @@ class DDb:
     else:
       attrs = {}
     dynamodb = boto3.client('dynamodb',**attrs)
+  def list_message_groups(client,my_user_uuid):
+    ddb = Ddb.client()
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pkey',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        'pkey': {'S': f"GRP#{my_user_uuid}"}
+      }
+    }
 
+    # query the table
+    response = dynamodb.query(**query_params)
+    items = response['Items']
+    
+    results = []
+    for item in items:
+      last_sent_at = item['sk']['S']
+      results.append({
+        'uuid': item['user_handle']['S'],
+        'display_name': item['user_display_name']['S'],
+        'handle': item['user_handle']['S'],
+        'message': item['message']['S'],
+        'created_at': last_sent_at
+      })
+  def list_messages(client,message_group_uuid):
+    ddb = Ddb.client()
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pkey',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        'pkey': {'S': f"MSG#{message_group_uuid}"}
+      }
+    }
+
+    # query the table
+    response = dynamodb.query(**query_params)
+    items = response['Items']
+    
+    results = []
+    for item in items:
+      created_At = item['sk']['S']
+      results.append({
+        'uuid': item['user_handle']['S'],
+        'display_name': item['user_display_name']['S'],
+        'handle': item['user_handle']['S'],
+        'message': item['message']['S'],
+        'created_at': created_at
+      })
   # creates message_group and message
   def create_message_group(client, message,my_user_uuid, my_user_display_name, my_user_handle, other_user_uuid, other_user_display_name, other_user_handle):
     table_name = 'cruddur-messages'

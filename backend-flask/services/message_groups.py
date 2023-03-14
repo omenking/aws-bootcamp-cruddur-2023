@@ -1,10 +1,23 @@
 from datetime import datetime, timedelta, timezone
+from lib.ddb import Ddb
+
 class MessageGroups:
   def run(user_handle):
     model = {
       'errors': None,
       'data': None
     }
+
+    ddb = Ddb.client()
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'data = :my_user_uuid',
+      'ExpressionAttributeValues': {
+        ':my_user_uuid': {'S': brown_user_uuid}
+      }
+    }
+
+
 
     now = datetime.now(timezone.utc).astimezone()
     results = [

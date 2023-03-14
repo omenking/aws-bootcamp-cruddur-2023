@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 from lib.ddb import Ddb
-from json
 
 class CreateMessage:
   def run(message, user_sender_handle, user_receiver_handle):
@@ -29,8 +28,7 @@ class CreateMessage:
       }
     else:
       sql = db.template('users','create_message_users')
-      json = db.query_array_json(sql)
-      users = json.loads(json)
+      users = db.query_array_json(sql)
 
       my_user    = next((item for item in users if item["handle"] == user_sender_handle), None)
       other_user = next((item for item in users if item["handle"] == user_receiver_handle), None)
