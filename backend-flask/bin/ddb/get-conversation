@@ -21,6 +21,8 @@ message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
 query_params = {
   'TableName': table_name,
   'KeyConditionExpression': 'pk = :pkey',
+  'ScanIndexForward': False,
+  'Limit': 20
   'ExpressionAttributeValues': {
     ':pkey': {'S': f"MSG#{message_group_uuid}"}
   }
