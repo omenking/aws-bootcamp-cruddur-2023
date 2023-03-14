@@ -3,14 +3,33 @@
 import boto3
 import sys
 from datetime import datetime, timedelta, timezone
+import uuid
 
 attrs = {
   'endpoint_url': 'http://localhost:8000'
 }
-
+# unset endpoint url for use with production database
 if len(sys.argv) == 2:
   if "prod" in sys.argv[1]:
     attrs = {}
+dynamodb = boto3.client('dynamodb',**attrs)
+
+def create_conversation(client,message_user_group_uuid, my_user_uuid, last_message_at=None, message=None, other_user_uuid=None, other_user_display_name=None, other_user_handle=None):
+  table_name = 'cruddur-messages'
+  record = {
+    'pk':   {'S': f"GRP#{my_user_uuid}"},
+    'sk':   {'S': last_message_at },
+    'message': {'S': message},
+    'other_user_uuid': {'S': my_user_uuid},
+    'other_user_display_name': {'S': my_user_display_name},
+    'other_user_handle': {'S': my_user_handle},
+    'message_user_group_uuid': {'S': message_user_group_uuid}
+  }
+  response = client.put_item(
+    TableName=table_name,
+    Item=record
+  )
+  print(response)
 
 def create_message(client,message_group_uuid, created_at, message, sender_uuid, sender_display_name, sender_handle):
   # Entity # Message Group Id
@@ -59,7 +78,27 @@ def bayko_message(client,timestamp,message):
     sender_handle='bayko'
   )
 
-dynamodb = boto3.client('dynamodb',**attrs)
+message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399" #str(uuid.uuid4())
+my_user_uuid = "2aa1c49c-669a-47b0-9177-37efe9e420c4" #str(uuid.uuid4())
+my_user_display_name = "Andrew Brown"
+my_user_handle = "andrewbrown"
+
+other_user_uuid = "31634299-187a-4ed9-920f-c119e54074f" #str(uuid.uuid4())
+other_user_display_name = "Andrew Bayo"
+other_user_handle = "bayko"
+
+create_conversation(
+  client=dynamodb,
+  message_user_group_uuid= "5ae290ed-55d1-47a0-bc6d-fe2bc2700399", 
+  my_user_uuid= "2aa1c49c-669a-47b0-9177-37efe9e420c4"
+)
+
+print("My User UUID")
+print(my_user_uuid)
+print("Other User UUID")
+print(other_user_uuid)
+
+
 now = datetime.now(timezone.utc).astimezone()
 
 conversation = """
