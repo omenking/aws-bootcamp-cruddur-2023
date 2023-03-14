@@ -18,12 +18,12 @@ table_name = 'cruddur-messages'
 
 timestamp = datetime.now().isoformat()
 
-message_group_uuid = str(uuid.uuid4())
-my_user_uuid = str(uuid.uuid4())
+message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399" #str(uuid.uuid4())
+my_user_uuid = "2aa1c49c-669a-47b0-9177-37efe9e420c4" #str(uuid.uuid4())
 my_user_display_name = "Andrew Brown"
 my_user_handle = "andrewbrown"
 
-other_user_uuid = str(uuid.uuid4())
+other_user_uuid = "31634299-187a-4ed9-920f-c119e54074f" #str(uuid.uuid4())
 other_user_display_name = "Andrew Bayo"
 other_user_handle = "bayko"
 
@@ -60,3 +60,7 @@ print(response2)
 
 print("Message Group UUID")
 print(message_group_uuid)
+print("My User UUID")
+print(my_user_uuid)
+print("Other User UUID")
+print(other_user_uuid)

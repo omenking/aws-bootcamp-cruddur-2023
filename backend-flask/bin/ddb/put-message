@@ -2,7 +2,7 @@
 
 import boto3
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 attrs = {
   'endpoint_url': 'http://localhost:8000'
@@ -12,26 +12,48 @@ if len(sys.argv) == 2:
   if "prod" in sys.argv[1]:
     attrs = {}
 
+def create_message(client,message_group_uuid, created_at, message, sender_uuid, sender_display_name, sender_handle):
+  # Entity # Message Group Id
+  record = {
+    'pk':   {'S': f"MSG#{message_group_uuid}"},
+    'sk':   {'S': created_at },
+    'data': {'S': message},
+    'sender_uuid': {'S': sender_uuid},
+    'sender_display_name': {'S': sender_display_name},
+    'sender_handle': {'S': sender_handle}
+  }
+  # insert the record into the table
+  table_name = 'cruddur-messages'
+  response = client.put_item(
+    TableName=table_name,
+    Item=record
+  )
+  # print the response
+  print(response)
+
+def bakyo_message(client,timestamp,message):
+  sender_uuid = "31634299-187a-4ed9-920f-c119e54074f"
+  message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+
+  create_message(
+    client=client,
+    message_group_uuid= message_group_uuid,
+    created_at=timestamp,
+    message=message,
+    sender_uuid=sender_uuid,
+    sender_display_name='Andrew Bayko',
+    sender_handle='bayko'
+  )
+
 dynamodb = boto3.client('dynamodb',**attrs)
-table_name = 'cruddur-messages'
+now = datetime.now(timezone.utc).astimezone()
 
-timestamp = datetime.now().isoformat()
+bakyo_message(dynamodb,(now + timedelta(minutes=2)).isoformat(), "2) Did you see they are making a new Babylon 5 movie?")
+bakyo_message(dynamodb,(now + timedelta(minutes=3)).isoformat(), "3) Its our last best hope for peace.")
+bakyo_message(dynamodb,(now + timedelta(minutes=5)).isoformat(), "5) G'Kar!")
+bakyo_message(dynamodb,(now + timedelta(minutes=4)).isoformat(), "4) Garibaldi!")
+bakyo_message(dynamodb,(now + timedelta(minutes=1)).isoformat(), "1) How are you doing?")
 
-# Entity # Message Group Id
-record = {
-  'pk':   {'S': 'MSG#1'},
-  'sk':   {'S': timestamp },
-  'data': {'S': 'How are you doing'},
-  'sender_uuid': {'S': '25b0a907-2e7d-426b-b260-e56ee279ea14'},
-  'sender_display_name': {'S': 'Andrew Brown'},
-  'sender_handle': {'S': 'andrewbrown'}
-}
 
-# insert the record into the table
-response = dynamodb.put_item(
-  TableName=table_name,
-  Item=record
-)
 
-# print the response
-print(response)
+

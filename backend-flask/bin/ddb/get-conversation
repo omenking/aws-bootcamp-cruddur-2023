@@ -4,7 +4,6 @@ import boto3
 import sys
 import json
 
-
 attrs = {
   'endpoint_url': 'http://localhost:8000'
 }
@@ -16,12 +15,14 @@ if len(sys.argv) == 2:
 dynamodb = boto3.client('dynamodb',**attrs)
 table_name = 'cruddur-messages'
 
+message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
+
 # define the query parameters
 query_params = {
   'TableName': table_name,
   'KeyConditionExpression': 'pk = :pkey',
   'ExpressionAttributeValues': {
-    ':pkey': {'S': 'MSG_GROUP#1'}
+    ':pkey': {'S': f"MSG#{message_group_uuid}"}
   }
 }
 
