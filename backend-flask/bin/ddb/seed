@@ -14,21 +14,21 @@ if len(sys.argv) == 2:
     attrs = {}
 dynamodb = boto3.client('dynamodb',**attrs)
 
-def create_conversation(client,message_user_group_uuid, my_user_uuid, last_message_at=None, message=None, other_user_uuid=None, other_user_display_name=None, other_user_handle=None):
+def create_message_group(client,message_group_uuid, my_user_uuid, last_message_at=None, message=None, other_user_uuid=None, other_user_display_name=None, other_user_handle=None):
   table_name = 'cruddur-messages'
   record = {
     'pk':   {'S': f"GRP#{my_user_uuid}"},
     'sk':   {'S': last_message_at},
-    'message_user_group_uuid': {'S': message_user_group_uuid}
+    'message_group_uuid': {'S': message_group_uuid}
   }
   if message != None:
     record['message'] = {'S': message}
-  if my_user_uuid != None:
-    record['other_user_uuid'] = {'S': my_user_uuid}
+  if other_user_uuid != None:
+    record['user_uuid'] = {'S': other_user_uuid}
   if other_user_display_name != None:
-    record['other_user_display_name'] = {'S': my_user_display_name}
+    record['user_display_name'] = {'S': other_user_display_name}
   if other_user_handle != None:
-    record['other_user_handle'] = {'S': my_user_handle}
+    record['user_handle'] = {'S': other_user_handle}
 
   response = client.put_item(
     TableName=table_name,
@@ -36,15 +36,15 @@ def create_conversation(client,message_user_group_uuid, my_user_uuid, last_messa
   )
   print(response)
 
-def create_message(client,message_group_uuid, created_at, message, other_user_uuid, other_user_display_name, other_user_handle):
+def create_message(client,message_group_uuid, created_at, message, my_user_uuid, my_user_display_name, my_user_handle):
   # Entity # Message Group Id
   record = {
     'pk':   {'S': f"MSG#{message_group_uuid}"},
     'sk':   {'S': created_at },
     'message': {'S': message},
-    'other_user_uuid': {'S': other_user_uuid},
-    'other_user_display_name': {'S': other_user_display_name},
-    'other_user_handle': {'S': other_user_handle}
+    'user_uuid': {'S': my_user_uuid},
+    'user_display_name': {'S': my_user_display_name},
+    'user_handle': {'S': my_user_handle}
   }
   # insert the record into the table
   table_name = 'cruddur-messages'
@@ -64,9 +64,9 @@ def brown_message(client,timestamp,message):
     message_group_uuid= message_group_uuid,
     created_at=timestamp,
     message=message,
-    other_user_uuid=sender_uuid,
-    other_user_display_name='Andrew Brown',
-    other_user_handle='brown'
+    my_user_uuid=sender_uuid,
+    my_user_display_name='Andrew Brown',
+    my_user_handle='brown'
   )
 
 def bayko_message(client,timestamp,message):
@@ -78,12 +78,13 @@ def bayko_message(client,timestamp,message):
     message_group_uuid= message_group_uuid,
     created_at=timestamp,
     message=message,
-    other_user_uuid=sender_uuid,
-    other_user_display_name='Andrew Bayko',
-    other_user_handle='bayko'
+    my_user_uuid=sender_uuid,
+    my_user_display_name='Andrew Bayko',
+    my_user_handle='bayko'
   )
 
 message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399" #str(uuid.uuid4())
+
 my_user_uuid = "2aa1c49c-669a-47b0-9177-37efe9e420c4" #str(uuid.uuid4())
 my_user_display_name = "Andrew Brown"
 my_user_handle = "andrewbrown"
@@ -92,15 +93,15 @@ other_user_uuid = "31634299-187a-4ed9-920f-c119e54074f" #str(uuid.uuid4())
 other_user_display_name = "Andrew Bayo"
 other_user_handle = "bayko"
 
-create_conversation(
+create_message_group(
   client=dynamodb,
-  message_user_group_uuid=message_group_uuid,
+  message_group_uuid=message_group_uuid,
   my_user_uuid=my_user_uuid,
   last_message_at='INIT'
 )
-create_conversation(
+create_message_group(
   client=dynamodb,
-  message_user_group_uuid=message_group_uuid,
+  message_group_uuid=message_group_uuid,
   my_user_uuid=other_user_uuid,
   last_message_at='INIT'
 )
@@ -109,7 +110,6 @@ print("My User UUID")
 print(my_user_uuid)
 print("Other User UUID")
 print(other_user_uuid)
-
 
 now = datetime.now(timezone.utc).astimezone()
 
