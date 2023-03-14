@@ -18,13 +18,18 @@ def create_conversation(client,message_user_group_uuid, my_user_uuid, last_messa
   table_name = 'cruddur-messages'
   record = {
     'pk':   {'S': f"GRP#{my_user_uuid}"},
-    'sk':   {'S': last_message_at },
-    'message': {'S': message},
-    'other_user_uuid': {'S': my_user_uuid},
-    'other_user_display_name': {'S': my_user_display_name},
-    'other_user_handle': {'S': my_user_handle},
+    'sk':   {'S': last_message_at},
     'message_user_group_uuid': {'S': message_user_group_uuid}
   }
+  if message != None:
+    record['message'] = {'S': message}
+  if my_user_uuid != None:
+    record['other_user_uuid'] = {'S': my_user_uuid}
+  if other_user_display_name != None:
+    record['other_user_display_name'] = {'S': my_user_display_name}
+  if other_user_handle != None:
+    record['other_user_handle'] = {'S': my_user_handle}
+
   response = client.put_item(
     TableName=table_name,
     Item=record
@@ -37,9 +42,9 @@ def create_message(client,message_group_uuid, created_at, message, other_user_uu
     'pk':   {'S': f"MSG#{message_group_uuid}"},
     'sk':   {'S': created_at },
     'message': {'S': message},
-    'other_user_uuid': {'S': sender_uuid},
-    'other_user_display_name': {'S': sender_display_name},
-    'other_user_handle': {'S': sender_handle}
+    'other_user_uuid': {'S': other_user_uuid},
+    'other_user_display_name': {'S': other_user_display_name},
+    'other_user_handle': {'S': other_user_handle}
   }
   # insert the record into the table
   table_name = 'cruddur-messages'
