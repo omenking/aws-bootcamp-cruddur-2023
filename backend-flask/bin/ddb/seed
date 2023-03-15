@@ -71,6 +71,7 @@ def create_message(client,message_group_uuid, created_at, message, my_user_uuid,
   record = {
     'pk':   {'S': f"MSG#{message_group_uuid}"},
     'sk':   {'S': created_at },
+    'message_uuid': { 'S': str(uuid.uuid4()) },
     'message': {'S': message},
     'user_uuid': {'S': my_user_uuid},
     'user_display_name': {'S': my_user_display_name},

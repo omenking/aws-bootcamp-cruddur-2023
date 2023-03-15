@@ -65,7 +65,7 @@ class Ddb:
     for item in items:
       created_at = item['sk']['S']
       results.append({
-        'uuid': item['user_handle']['S'],
+        'uuid': item['message_uuid']['S'],
         'display_name': item['user_display_name']['S'],
         'handle': item['user_handle']['S'],
         'message': item['message']['S'],
