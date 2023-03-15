@@ -174,3 +174,5 @@
    ```
    
    ![Postgres Working](Week1/Postgres%20Working.jpeg)
+
+-  Tried [Multi-stage Build](https://cloudnweb.dev/2019/10/crafting-multi-stage-builds-with-docker-in-node-js/) but it didn't work well.
