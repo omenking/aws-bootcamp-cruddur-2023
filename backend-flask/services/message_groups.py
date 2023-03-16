@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
+
 from lib.ddb import Ddb
 from lib.db import db
+from lib.momento import MomentoCounter
 
 class MessageGroups:
   def run(user_handle):
@@ -19,5 +21,6 @@ class MessageGroups:
     print("list_message_groups")
     print(data)
 
+    MomentoCounter.reset(f"msgs/{user_handle}")
     model['data'] = data
     return model
