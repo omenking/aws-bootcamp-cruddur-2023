@@ -31,6 +31,34 @@ export default function DesktopNavigation(props) {
       active={props.active} />
   }
 
+  const getCounter = async ()=> {
+    const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages/counter`
+    try {
+      const res = await fetch(backend_url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+        method: "GET"
+      });
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setActivities(resJson)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  React.useEffect(()=>{
+    //prevents double call
+    if (dataFetchedRef.current) return;
+    dataFetchedRef.current = true;
+
+    getCounter()
+  }
+
   return (
     <nav>
       <Logo className='logo' />
