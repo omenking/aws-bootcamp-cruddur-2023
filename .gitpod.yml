@@ -21,6 +21,11 @@ tasks:
     command: |
       cd frontend-react-js
       npm i
+  - name: momento
+    before: |
+      brew tap momentohq/tap
+      brew install momento-cli
+
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
