@@ -26,20 +26,27 @@ query_params = {
   'Limit': 20,
   'ExpressionAttributeValues': {
     ':pkey': {'S': f"MSG#{message_group_uuid}"}
-  }
+  },
+  'ReturnConsumedCapacity': 'TOTAL'
 }
 
 # query the table
 response = dynamodb.query(**query_params)
 
+
+
 # print the items returned by the query
+print(json.dumps(response, sort_keys=True, indent=2))
+
+# print the consumed capacity
+print(json.dumps(response['ConsumedCapacity'], sort_keys=True, indent=2))
+
 items = response['Items']
-print(json.dumps(items, sort_keys=True, indent=2))
 
 for item in items:
-  sender_handle = item['sender_handle']['S']
-  message       = item['data']['S']
+  sender_handle = item['user_handle']['S']
+  message       = item['message']['S']
   timestamp     = item['sk']['S']
   dt_object = datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f%z')
   formatted_datetime = dt_object.strftime('%Y-%m-%d %I:%M %p')
-  print(f'{sender_handle: <8}{formatted_datetime: <22}{message[:40]}...')
+  print(f'{sender_handle: <16}{formatted_datetime: <22}{message[:40]}...')

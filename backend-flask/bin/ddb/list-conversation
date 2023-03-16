@@ -16,21 +16,20 @@ dynamodb = boto3.client('dynamodb',**attrs)
 table_name = 'cruddur-messages'
 
 
-brown_user_uuid = "2aa1c49c-669a-47b0-9177-37efe9e420c4"
+brown_user_uuid = "1506fa16-d775-4808-9f46-456661029af2"
 
 # define the query parameters
 query_params = {
   'TableName': table_name,
-  "IndexName": 'data-sk-index',
-  'KeyConditionExpression': 'data = :my_user_uuid',
+  'KeyConditionExpression': 'pk = :pkey',
   'ExpressionAttributeValues': {
-    ':my_user_uuid': {'S': brown_user_uuid}
-  }
+    ':pkey': {'S': f"GRP#{brown_user_uuid}"}
+  },
+  'ReturnConsumedCapacity': 'TOTAL'
 }
 
 # query the table
 response = dynamodb.query(**query_params)
 
 # print the items returned by the query
-items = response['Items']
-print(json.dumps(items, sort_keys=True, indent=2))
+print(json.dumps(response, sort_keys=True, indent=2))
