@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.abspath(os.path.join(current_path, '..', '..'))
+sys.path.append(parent_path)
+from lib.momento import MomentoCounter
+
+MomentoCounter.incr("Hello!")

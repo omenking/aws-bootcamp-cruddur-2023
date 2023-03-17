@@ -32,10 +32,10 @@ If you lost your cache or your cache was comprised you just have to wait for the
 
 ```sh
 export MOMENTO_AUTH_TOKEN=""
-export MOMENTO_TTL="600"
+export MOMENTO_TTL_SECONDS="600"
 export MOMENTO_CACHE_NAME="cruddur"
 gp env MOMENTO_AUTH_TOKEN=""
-gp env MOMENTO_TTL="600"
+gp env MOMENTO_TTL_SECONDS="600"
 gp env MOMENTO_CACHE_NAME="cruddur"
 ```
 
