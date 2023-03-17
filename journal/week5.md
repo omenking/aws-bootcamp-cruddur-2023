@@ -20,7 +20,7 @@
 
 3 Access Patterns
 
-# Pattern A  (showing a single conversation)
+## Pattern A  (showing a single conversation)
 
 A user wants to see a list of messages that belong to a message group
 The messages must be ordered by the created_at timestamp from newest to oldest (DESC)
@@ -31,19 +31,21 @@ SELECT
   messages.display_name,
   messages.message,
   messages.handle,
-  messages.created_at
+  messages.created_at -- sk
 FROM messages
 WHERE
-  messages.message_group_uuid = {{message_group_uuid}}
+  messages.message_group_uuid = {{message_group_uuid}} -- pk
 ORDER BY messages.created_at DESC
 ```
 
-# Pattern B (list of conversation)
+> message_group_uuid comes from Pattern B
+
+## Pattern B (list of conversation)
 
 A user wants to see a list of previous conversations.
 These conversations are listed from newest to oldest (DESC)
 We want to see the other person we are talking to.
-We want to see the last message from whoeever last wrote.
+We want to see the last message (from whomever) in summary.
 
 ```sql
 SELECT
@@ -55,11 +57,30 @@ SELECT
   message_groups.last_message_at
 FROM message_groups
 WHERE
-  message_groups.user_uuid = {{user_uuid}}
+  message_groups.user_uuid = {{user_uuid}} --pk
 ORDER BY message_groups.last_message_at DESC
 ```
 
-# Pattern C (get a message_group)
+> We need a Global Secondary Index (GSI)
+
+## Pattern C (create a message)
+
+```sql
+INSERT INTO messages (
+  user_uuid,
+  display_name,
+  handle,
+  creaed_at
+)
+VALUES (
+  {{user_uuid}},
+  {{display_name}},
+  {{handle}},
+  {{created_at}}
+);
+```
+
+## Pattern D (update a message_group for the last message)
 
 When a user creates a message we need to update the conversation
 to display the last message information for the conversation
@@ -74,6 +95,7 @@ SET
   last_message_at = {{last_message_at}}
 WHERE 
   message_groups.uuid = {{message_group_uuid}}
+  AND message_groups.user_uuid = {{user_uuid}}
 ```
 
 
