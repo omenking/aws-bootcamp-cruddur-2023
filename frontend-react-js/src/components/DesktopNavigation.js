@@ -51,13 +51,13 @@ export default function DesktopNavigation(props) {
     }
   }
 
-  React.useEffect(()=>{
-    //prevents double call
-    if (dataFetchedRef.current) return;
-    dataFetchedRef.current = true;
-
-    getCounter()
-  }
+  //React.useEffect(()=>{
+  //  //prevents double call
+  //  if (dataFetchedRef.current) return;
+  //  dataFetchedRef.current = true;
+//
+  //  getCounter()
+  //}
 
   return (
     <nav>

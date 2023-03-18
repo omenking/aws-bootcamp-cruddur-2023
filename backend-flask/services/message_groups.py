@@ -21,6 +21,6 @@ class MessageGroups:
     print("list_message_groups")
     print(data)
 
-    MomentoCounter.reset(f"msgs/{user_handle}")
+    #MomentoCounter.reset(f"msgs/{user_handle}")
     model['data'] = data
     return model
