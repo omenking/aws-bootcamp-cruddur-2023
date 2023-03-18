@@ -77,6 +77,7 @@ class Ddb:
     table_name = 'cruddur-messages'
     
     message_group_uuid = str(uuid.uuid4())
+    message_uuid = str(uuid.uuid4())
     now = datetime.now(timezone.utc).astimezone().isoformat()
     last_message_at = now
     created_at = now
@@ -95,6 +96,7 @@ class Ddb:
       'pk':   {'S': f"MSG#{message_group_uuid}"},
       'sk':   {'S': created_at },
       'message': {'S': message},
+      'message_uuid': {'S': message_uuid},
       'user_uuid': {'S': my_user_uuid},
       'user_display_name': {'S': my_user_display_name},
       'user_handle': {'S': my_user_handle}
@@ -130,11 +132,13 @@ class Ddb:
   def create_message(client,message_group_uuid, message, my_user_uuid, my_user_display_name, my_user_handle):
     now = datetime.now(timezone.utc).astimezone().isoformat()
     created_at = now
+    message_uuid = str(uuid.uuid4())
 
     record = {
       'pk':   {'S': f"MSG#{message_group_uuid}"},
       'sk':   {'S': created_at },
       'message': {'S': message},
+      'message_uuid': {'S': message_uuid},
       'user_uuid': {'S': my_user_uuid},
       'user_display_name': {'S': my_user_display_name},
       'user_handle': {'S': my_user_handle}
