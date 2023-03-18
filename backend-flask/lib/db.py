@@ -1,6 +1,7 @@
 from psycopg_pool import ConnectionPool
 import os
-
+import re
+from flask import current_app as app
 
 class Db:
   def __init__(self):
@@ -9,17 +10,26 @@ class Db:
   def init_pool(self):
     connection_url = os.getenv("CONNECTION_URL")
     self.pool = ConnectionPool(connection_url)
-  
   # commit /insert update
-  def query_commit(self):
+  def query_commit(self,sql,*kwargs):
+  
+   pattern= r"\bRETURNING\b"
+   is_returning_id =re.search(pattern,sql)
+   
    conn = None
    cur = None 
    try:
-        conn = psycopg2.connect(os.getenv('CONNECTION_URL'))
+        conn = self.pool.connect(os.getenv('CONNECTION_URL'))
         cur = conn.cursor()
-        cur.execute(sql)
+        cur.execute(sql,kwargs)
+        if is_returning_id:
+          returning_id= cur.fetchone();
+          
         conn.commit() 
-   except (Exception, psycopg2.DatabaseError) as error:
+
+        if is_returning_id:
+          return returning_id
+   except (Exception) as error:
         print(error)
         #conn.rollback
    finally:
@@ -27,7 +37,7 @@ class Db:
             cur.close()
             conn.close()
             print('Database connection closed.')
-
+  
   # select and return json array
   def query_array_json(self,sql):
     print("SQL: array")
@@ -66,6 +76,12 @@ class Db:
     ) array_row);
     '''
     return sql
+
+  def template(self,name):
+    template_path=os.path.join(app.root_path,"db","sql",name+'.sql')
+    with open(template_path,'r') as f:
+        template_content=f.read()
+    return  template_content
 
 
 db= Db()
