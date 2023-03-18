@@ -10,9 +10,18 @@ class Db:
   def init_pool(self):
     connection_url = os.getenv("CONNECTION_URL")
     self.pool = ConnectionPool(connection_url)
+  
+  def print_sql(self,title,sql):
+    cyan = '\033[96m'
+    no_color = '\033[0m'
+    print("\n")
+    print(f'{cyan}SQL Statament [{title}]-----{no_color}')
+    print(sql+"\n")
+
   # commit /insert update
   def query_commit(self,sql,*kwargs):
-  
+   self.print_sql("query commit with returning",sql);
+
    pattern= r"\bRETURNING\b"
    is_returning_id =re.search(pattern,sql)
    
