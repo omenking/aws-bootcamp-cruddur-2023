@@ -1,6 +1,5 @@
 flask
 flask-cors
-aws-xray-sdk
 
 opentelemetry-api 
 opentelemetry-sdk 
@@ -8,9 +7,14 @@ opentelemetry-exporter-otlp-proto-http
 opentelemetry-instrumentation-flask 
 opentelemetry-instrumentation-requests
 
-blinker
-rollbar
+aws-xray-sdk
 
 watchtower
 
+blinker
+rollbar
+
 Flask-AWSCognito
+
+psycopg[binary]
+psycopg[pool]

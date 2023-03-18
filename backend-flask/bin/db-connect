@@ -2,4 +2,10 @@
 
 #!command $ chmod u+x ./bin/db-connect
 
-psql $CONNECTION_URL 
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  URL=$PROD_CONNECTION_URL
+else
+#psql 
+CONNECTION_URL 
+fi
