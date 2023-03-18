@@ -46,46 +46,32 @@ class CreateActivity:
       }   
     else:
       expires_at=(now + ttl_offset).isoformat()
-      CreateActivity.create_activity(user_handle,message,expires_at)
-      model['data'] = {
-        'uuid': uuid.uuid4(),
-        'display_name': 'Andrew Brown',
-        'handle':  user_handle,
-        'message': message,
-        'created_at': now.isoformat(),
-        'expires_at': (now + ttl_offset).isoformat()
-      }
+      uuid=CreateActivity.create_activity(user_handle,message,expires_at)
+      print("uuid:"+str(uuid))
+      object_json = CreateActivity.query_object_activity(uuid)
+      model['data'] =object_json
     return model
   
   def create_activity(handle,message,expires_at):
 
-    sql = db.template("create_activity")
-    # sql= f"""
-    #   INSERT INTO activities (
-    #     user_uuid,
-    #     message,
-    #     expires_at
-    #   ) 
-    #   VALUES (
-    #      (
-    #       SELECT uuid 
-    #       from public.users 
-    #       WHERE users.handle = %{handle}s LIMIT 1
-    #       ),
-    #     %{message}s,
-    #     %{expires_at}s
-    #   )
-    #   returning user_uuid
-
-    # """
+    sql = db.template("activities","create")
     uuid= db.query_commit(sql,
       {
-        handle:handle ,
-        message:message,
-        expires_at:expires_at
+        'handle':handle ,
+        'message':message,
+        'expires_at':expires_at
       }
 
     )
+    print(uuid)
 
-  def query_object_activity():
-    pass
+    return uuid
+
+  def query_object_activity(uuid):
+    sql = db.template("activities","object")
+    return db.query_object_json(sql,
+      {
+        'uuid':uuid 
+      }
+
+    )
