@@ -9,6 +9,11 @@
    
    
 # Tasks completed
+ - Instrument the backend app with Honeycomb Open Telemetry (OTEL)
+
+   ![Honeycomb 1](Week2/Honeycomb%201.png) 
+   
+   ![Honeycomb 1](Week2/Honeycomb%202.png) 
 
  - CloudWatch Logs
  
