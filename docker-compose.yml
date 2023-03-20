@@ -2,8 +2,8 @@ version: "3.8"
 services:
   backend-flask:
     environment:
-      CONNECTION_URL: "${PROD_CONNECTION_URL}"
-      #CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
+      #CONNECTION_URL: "${PROD_CONNECTION_URL}"
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
       FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
       BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
       #FRONTEND_URL: "https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
@@ -19,6 +19,7 @@ services:
       ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"
       AWS_COGNITO_USER_POOL_ID: "ca-central-1_CQ4wDfnwc"
       AWS_COGNITO_USER_POOL_CLIENT_ID: "5b6ro31g97urk767adrbrdj1g5"    
+      AWS_ENDPOINT_URL: "http://ddb:8000"
     build: ./backend-flask
     ports:
       - "4567:4567"
@@ -37,13 +38,13 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend-react-js:/frontend-react-js
-  dynamodb-local:
+  ddb:
     # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
     # We needed to add user:root to get this working.
     user: root
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb-local
+    container_name: ddb
     ports:
       - "8000:8000"
     volumes:
