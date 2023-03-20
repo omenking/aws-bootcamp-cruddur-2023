@@ -23,11 +23,12 @@ export default function ActivityForm(props) {
         method: "POST",
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`
         },
         body: JSON.stringify({
           message: message,
-          user_receiver_handle: params.handle
+          message_group_uuid: params.message_group_uuid
         }),
       });
       let data = await res.json();
