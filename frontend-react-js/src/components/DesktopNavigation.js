@@ -42,7 +42,7 @@ export default function DesktopNavigation(props) {
       });
       let resJson = await res.json();
       if (res.status === 200) {
-        setActivities(resJson)
+        //setActivities(resJson)
       } else {
         console.log(res)
       }
