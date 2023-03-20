@@ -3,16 +3,19 @@ import {ReactComponent as ElipsesIcon} from './svg/elipses.svg';
 import React from "react";
 
 // [TODO] Authenication
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
+// Replaced with AWS amplify
+import { Auth } from 'aws-amplify';
 
-export default function ProfileInfo(props) {
+export default function  ProfileInfo(props) {
   const [popped, setPopped] = React.useState(false);
 
   const click_pop = (event) => {
     setPopped(!popped)
   }
 
-  const signOut = async () => {
+  // Replace Cookies with Amplify
+/*   const signOut = async () => {
     console.log('signOut')
     // [TODO] Authenication
     Cookies.remove('user.logged_in')
@@ -22,6 +25,15 @@ export default function ProfileInfo(props) {
     //Cookies.remove('user.password')
     //Cookies.remove('user.confirmation_code')
     window.location.href = "/"
+  } */
+
+  const signOut = async () => {
+    try {
+        await Auth.signOut({ global: true });
+        window.location.href = "/"
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
   }
 
   const classes = () => {
