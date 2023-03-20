@@ -19,6 +19,14 @@ export default function ActivityForm(props) {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages`
       console.log('onsubmit payload', message)
+
+      let json = { message: message }
+      if (params.handle) {
+        json.user_receiver_handle = params.handle
+      } else {
+        json.message_group_uuid = params.message_group_uuid
+      }
+
       const res = await fetch(backend_url, {
         method: "POST",
         headers: {
@@ -26,14 +34,17 @@ export default function ActivityForm(props) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`
         },
-        body: JSON.stringify({
-          message: message,
-          message_group_uuid: params.message_group_uuid
-        }),
+        body: JSON.stringify(json)
       });
       let data = await res.json();
       if (res.status === 200) {
-        props.setMessages(current => [...current,data]);
+          console.log('data:',data)
+        if (data.message_group_uuid) {
+          console.log('redirect to message group')
+          window.location.href = `/messages/${data.message_group_uuid}`
+        } else {
+          props.setMessages(current => [...current,data]);
+        }
       } else {
         console.log(res)
       }
