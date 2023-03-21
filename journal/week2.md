@@ -14,20 +14,6 @@
    ![Honeycomb 1](Week2/Honeycomb%201.png) 
    
    ![Honeycomb 1](Week2/Honeycomb%202.png) 
-
- - CloudWatch Logs
- 
-   Add the following package to backend-flask/requirements.txt
-   ```
-    watchtower
-   ```
-   ![CloudWatch Logs](Week2/CloudWatch%20Logs.png) 
-
- - Cloud Watch Log groups
-
-   ![CloudWatch Log groups 1](Week2/CloudWatch%20Log%20groups%201.png)
-   
-   ![CloudWatch Log groups 2](Week2/CloudWatch%20Log%20groups%202.png)
    
  - Implement AWS Xray 
 
@@ -91,6 +77,9 @@
    $ aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
    ```
    
+   ![Xray AWS CLI](Week2/Xray%20AWS%20CLI.png) 
+
+
    Add the following to ![/backend-flask/app.py](https://github.com/Peter2220/aws-bootcamp-cruddur-2023/blob/main/backend-flask/app.py)
    ```
    ...
@@ -116,19 +105,186 @@
  - Xray Traces in the AWS Console
 
    ![Xray Traces](Week2/Xray%20Traces.png) 
+   ![Xray Traces 1](Week2/Xray%20traces%201.png) 
+   ![Xray Traces 2](Week2/Xray%20traces%202.png) 
    
-   ![Xray AWS CLI](Week2/Xray%20AWS%20CLI.png) 
+   Raw Output of the above screenshot:
+   
+   ```
+   {
+       "Id": "1-64199bf4-6998a8a7b2614c8a1fd94430",
+       "Duration": 0.002,
+       "LimitExceeded": false,
+       "Segments": [
+           {
+               "Id": "7737f478c76cb8c4",
+               "Document": {
+                   "id": "7737f478c76cb8c4",
+                   "name": "backend-flask",
+                   "start_time": 1679399924.0736885,
+                   "trace_id": "1-64199bf4-6998a8a7b2614c8a1fd94430",
+                   "end_time": 1679399924.075747,
+                   "in_progress": false,
+                   "http": {
+                       "request": {
+                           "url": "http://4567-peter2220-awsbootcampcr-x321f6gg5yh.ws-eu90.gitpod.io/api/activities/home",
+                           "method": "GET",
+                           "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0",
+                           "client_ip": "197.39.79.159",
+                           "x_forwarded_for": true
+                       },
+                       "response": {
+                           "status": 200,
+                           "content_length": 1240
+                       }
+                   },
+                   "aws": {
+                       "xray": {
+                           "sampling_rule_name": "Cruddur",
+                           "sdk_version": "2.11.0",
+                           "sdk": "X-Ray for Python"
+                       }
+                   },
+                   "service": {
+                       "runtime": "CPython",
+                       "runtime_version": "3.11.2"
+                   },
+                   "subsegments": [
+                       {
+                           "id": "8d6ba9f5ea97429b",
+                           "name": "activities_home",
+                           "start_time": 1679399924.0746317,
+                           "end_time": 1679399924.0752327,
+                           "in_progress": false,
+                           "namespace": "local"
+                       }
+                   ]
+               }
+           }
+       ]
+   }
+   ```
+   
+ - CloudWatch Logs
  
- - Implement Rollbar
- 
-   Add the following package to backend-flask/requirements.txt
+   Add the following package to ![/backend-flask/requirements.txt](https://github.com/Peter2220/aws-bootcamp-cruddur-2023/blob/main/backend-flask/requirements.txt)
+   ```
+    watchtower
+   ```
+   
+   Update ![docker-compose.yml] (https://github.com/Peter2220/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml)
+   ```
+   version: "3.8"
+   services:
+       backend-flask:
+           environment:
+               ...
+               AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+               AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+               AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+          
+    ...
+    ```
+    
+    Add the following to [app.py](../backend-flask/app.py):
+    ```python
+    ...
+    #Cloudwatch Logs
+    import watchtower
+    import logging
+    from time import strftime
+
+    ...
+    
+    # Configuring Logger to Use CloudWatch
+    LOGGER = logging.getLogger(__name__)
+    LOGGER.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+    LOGGER.addHandler(console_handler)
+    LOGGER.addHandler(cw_handler)
+    LOGGER.info("Test Message")
+
+    app = Flask(__name__)
+
+    ...
+
+    @app.after_request
+    def after_request(response):
+        timestamp = strftime('[%Y-%b-%d %H:%M]')
+        LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+        return response
+    ```
+    
+   ![CloudWatch Logs](Week2/CloudWatch%20Logs.png) 
+
+ - Cloud Watch Log groups
+
+   ![CloudWatch Log groups 1](Week2/CloudWatch%20Log%20groups%201.png)
+   
+   ![CloudWatch Log groups 2](Week2/CloudWatch%20Log%20groups%202.png)
+   
+ - Implement Logging with Rollbar
+   Add ROLLBAR_ACCESS_TOKEN environment variable to gitpod
+   
+   Add the following package to [requirements.txt](../backend-flask/requirements.txt)
+   
    ```
     blinker
     rollbar
    ```
-   ![Fix ROLLBAR_ACCESS_TOKEN error](Week2/Fix%20ROLLBAR_ACCESS_TOKEN%20error.png) 
+   Add the following to [docker-compose.yml](../docker-compose.yml):
+   ```yaml
+   version: "3.8"
+   services:
+   backend-flask:
+       environment:
+       ...
 
+       ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"        
+       ...
+   ```
+   Update [app.py](../backend-flask/app.py):
+   ```python
+    ...
+    #Rollbar
+    import rollbar
+    import rollbar.contrib.flask
+    from flask import got_request_exception
 
+    ...
+
+    app = Flask(__name__)
+
+    ...
+
+    # Rollbar Intialize
+    rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+    @app.before_first_request
+    def init_rollbar():
+        """init rollbar module"""
+        rollbar.init(
+            # access token
+            rollbar_access_token,
+            # environment name
+            'production',
+            # server root directory, makes tracebacks prettier
+            root=os.path.dirname(os.path.realpath(__file__)),
+            # flask already sets up logging
+            allow_logging_basic_config=False)
+
+        # send exceptions from `app` to rollbar, using flask's signal system.
+        got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+
+    @app.route('/rollbar/test')
+    def rollbar_test():
+        rollbar.report_message('Hello World!', 'warning')
+        return "Hello World!"
+    ```
+   Docker Compose Up, Inspect Rollbar Logs:
+   
+   ![Rollbar](Week2/Rollbar.png)
+   
  - Important resources<br />
    [AWS X-Ray daemon (Application Instrumentation = Produce logs, traces)](https://docs.aws.amazon.com/xray/latest/devguide/xray-daemon.html)<br />
    [aws-xray-sdk-python](https://github.com/aws/aws-xray-sdk-python)<br />
