@@ -19,6 +19,7 @@ nav a.primary {
   text-decoration: none;
   padding: 12px 0;
   margin: 8px 0;
+  font-weight: bold;
 }
 nav a.primary:hover {
   color: rgb(255,255,255,1);

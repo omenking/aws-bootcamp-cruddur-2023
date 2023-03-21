@@ -7,6 +7,7 @@
   width: 100%;
   outline: none;
   color: #fff;
+  font-weight: bold;
 }
 .search_field input[type='text']:focus {
   border: solid 1px rgb(149,0,255,1);
