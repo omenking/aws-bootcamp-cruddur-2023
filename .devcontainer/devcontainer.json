@@ -18,7 +18,8 @@
 				"cweijan.vscode-postgresql-client2",
 				"ms-python.vscode-pylance",
 				"donjayamanne.githistory",
-				"GitHub.vscode-pull-request-github"
+				"GitHub.vscode-pull-request-github",
+				"DanielSanMedium.dscodegpt"
 			]
 		}
 	}
