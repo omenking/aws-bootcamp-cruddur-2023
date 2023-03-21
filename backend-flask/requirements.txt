@@ -15,3 +15,5 @@ watchtower
 # Rollbar
 blinker
 rollbar
+
+Fask-AWSCognito

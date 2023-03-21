@@ -15,7 +15,9 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-# HONEYCOMB 
+from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
+
+# HONEYCOMB
 # app.py updates
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -57,7 +59,7 @@ from flask import got_request_exception
 # LOGGER.addHandler(cw_handler)
 # LOGGER.info("some message")
 
-# HONEYCOMB 
+# HONEYCOMB
 # Initialize tracing and an exporter that can send data to Honeycomb
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
@@ -73,8 +75,17 @@ tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
+# Implement Cognito
+cognito_jwt_token = CognitoJwtToken(
+    user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"),
+    user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"),
+    region=os.getenv("AWS_DEFAULT_REGION")
+)
+
 # ROLLBAR --------
 rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+
+
 @app.before_first_request
 def init_rollbar():
     """init rollbar module"""
@@ -105,7 +116,7 @@ backend = os.getenv('BACKEND_URL')
 origins = [frontend, backend]
 cors = CORS(
     app,
-    headers=['Content-Type', 'Authorization'], 
+    headers=['Content-Type', 'Authorization'],
     expose_headers='Authorization',
     allow_headers="content-type,if-modified-since",
     methods="OPTIONS,GET,HEAD,POST"
@@ -119,10 +130,13 @@ cors = CORS(
 #     return response
 
 # ROLLBAR TEST
+
+
 @app.route('/rollbar/test')
 def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
+
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
@@ -165,9 +179,22 @@ def data_create_message():
 
 
 @app.route("/api/activities/home", methods=['GET'])
-#@xray_recorder.capture('activities_home')
+# @xray_recorder.capture('activities_home')
 def data_home():
-    data = HomeActivities.run()
+    access_token = extract_access_token(request.headers)
+    try:
+        claims = cognito_jwt_token.verify(access_token)
+        # authenicatied request
+        app.logger.debug("authenicated")
+        app.logger.debug(claims)
+        app.logger.debug(claims['username'])
+        data = HomeActivities.run(cognito_user_id=claims['username'])
+    except TokenVerifyError as e:
+        # unauthenicatied request
+        app.logger.debug(e)
+        app.logger.debug("unauthenicated")
+        data = HomeActivities.run()
+    return data, 200
     return data, 200
 
 
@@ -178,7 +205,7 @@ def data_notifications():
 
 
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
-#@xray_recorder.capture('activities_users')
+# @xray_recorder.capture('activities_users')
 def data_handle(handle):
     model = UserActivities.run(handle)
     if model['errors'] is not None:
@@ -211,8 +238,9 @@ def data_activities():
         return model['data'], 200
     return
 
+
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
-#@xray_recorder.capture('activities_show')
+# @xray_recorder.capture('activities_show')
 def data_show_activity(activity_uuid):
     data = ShowActivity.run(activity_uuid=activity_uuid)
     return data, 200
