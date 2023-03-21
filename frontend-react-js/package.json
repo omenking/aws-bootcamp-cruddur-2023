@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/context-zone": "^1.10.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.36.1",
     "@opentelemetry/instrumentation": "^0.36.1",
     "@opentelemetry/instrumentation-fetch": "^0.36.1",
     "@opentelemetry/instrumentation-xml-http-request": "^0.36.1",
+    "@opentelemetry/sdk-trace-web": "^1.10.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
