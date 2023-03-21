@@ -29,6 +29,9 @@ services:
       REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
       REACT_APP_AWS_USER_POOLS_ID: "${REACT_APP_AWS_USER_POOLS_ID}"
       REACT_APP_CLIENT_ID: "${REACT_APP_CLIENT_ID}"
+      HONEYCOMB_API_ENDPOINT: "api.honeycomb.io:443"
+      OTEL_SERVICE_NAME: "frontend-react"
+      HONEYCOMB_API_KEY: "${HONEYCOMB_API_KEY}"
     build: ./frontend-react-js
     ports:
       - "3000:3000"
@@ -76,4 +79,3 @@ networks:
 volumes:
   db:
     driver: local
-
