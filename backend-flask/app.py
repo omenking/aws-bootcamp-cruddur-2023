@@ -1,8 +1,8 @@
-import os
-import sys
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
+import os
+import sys
 
 from services.home_activities import *
 from services.notifications_activities import *
@@ -196,6 +196,7 @@ def data_home():
         app.logger.debug("unauthenicated")
         data = HomeActivities.run()
     return data, 200
+
 
 
 @app.route("/api/activities/notifications", methods=['GET'])
