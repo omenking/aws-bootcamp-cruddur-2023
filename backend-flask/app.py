@@ -82,6 +82,7 @@ cognito_jwt_token = CognitoJwtToken(
     region=os.getenv("AWS_DEFAULT_REGION")
 )
 
+
 # ROLLBAR --------
 rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
 
@@ -194,7 +195,6 @@ def data_home():
         app.logger.debug(e)
         app.logger.debug("unauthenicated")
         data = HomeActivities.run()
-    return data, 200
     return data, 200
 
 
