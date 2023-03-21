@@ -29,14 +29,91 @@
    
    ![CloudWatch Log groups 2](Week2/CloudWatch%20Log%20groups%202.png)
    
- - Implement AWS X-ray 
+ - Implement AWS Xray 
 
    Add the following package to backend-flask/requirements.txt
    ```
     aws-xray-sdk
    ```
+   
+   Edit docker-compose.yml and Add:
+   
+   ```
+   version: "3.8"
+   services:
+       backend-flask:
+           environment:
+               ...
+               AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+               AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
 
- - X-ray Traces
+       ...
+       xray-daemon:
+           image: "amazon/aws-xray-daemon"
+           environment:
+               AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+               AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+               AWS_REGION: "us-east-1"
+           command:
+               - "xray -o -b xray-daemon:2000"
+           ports:
+               - 2000:2000/udp
+   ```
+   
+   Then I ran the following command to group Xray traces:
+   ```
+   $ aws xray create-group \
+   --group-name "Cruddur" \
+   --filter-expression "service(\"backend-flask\")"
+   ```
+   Created a sampling rule for Xray service ![aws/json/xray.json](https://github.com/Peter2220/aws-bootcamp-cruddur-2023/blob/main/aws/json/xray.json)
+  
+   ```
+   {
+   "SamplingRule": {
+       "RuleName": "Cruddur",
+       "ResourceARN": "*",
+       "Priority": 9000,
+       "FixedRate": 0.1,
+       "ReservoirSize": 5,
+       "ServiceName": "backend-flask",
+       "ServiceType": "*",
+       "Host": "*",
+       "HTTPMethod": "*",
+       "URLPath": "*",
+       "Version": 1
+       }
+   }
+   ```
+   
+   Run the following command in the terminal
+   ```
+   $ aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
+   ```
+   
+   Add the following to ![/backend-flask/app.py](https://github.com/Peter2220/aws-bootcamp-cruddur-2023/blob/main/backend-flask/app.py)
+   ```
+   ...
+   ...
+
+   # X_RAY
+   from aws_xray_sdk.core import xray_recorder
+   from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+
+   xray_url = os.getenv("AWS_XRAY_URL")
+   #xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+   xray_recorder.configure(service='backend-flask') # To make sure that all traces can be grouped under the created Cruudr group 
+
+   ......
+   ......
+
+   app = Flask(__name__)
+
+   #XRAY
+   XRayMiddleware(app, xray_recorder)
+   ```
+   
+ - Xray Traces in the AWS Console
 
    ![Xray Traces](Week2/Xray%20Traces.png) 
    
