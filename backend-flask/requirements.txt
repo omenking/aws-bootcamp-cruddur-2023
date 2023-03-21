@@ -16,4 +16,4 @@ watchtower
 blinker
 rollbar
 
-Fask-AWSCognito
+Flask-AWSCognito
