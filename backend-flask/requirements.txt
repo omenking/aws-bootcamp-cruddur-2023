@@ -1,19 +1,18 @@
 flask
 flask-cors
-
 opentelemetry-api
 opentelemetry-sdk
 opentelemetry-exporter-otlp-proto-http
 opentelemetry-instrumentation-flask
 opentelemetry-instrumentation-requests
-
 # AWS X-ray
 aws-xray-sdk
 # CloudWatch
 watchtower
-
 # Rollbar
 blinker
 rollbar
-
+# Requests Library - POST requests to honeycomb traces endpoint
+requests
+# AWS Cognito
 Flask-AWSCognito

@@ -9,6 +9,9 @@ import ActivityFeed from '../components/ActivityFeed';
 import ActivityForm from '../components/ActivityForm';
 import ReplyForm from '../components/ReplyForm';
 
+// Import trace from opentelemetry/api
+import { trace } from '@opentelemetry/api';
+
 // [TODO] Authenication
 import Cookies from 'js-cookie'
 
@@ -19,6 +22,8 @@ export default function HomeFeedPage() {
   const [replyActivity, setReplyActivity] = React.useState({});
   const [user, setUser] = React.useState(null);
   const dataFetchedRef = React.useRef(false);
+  // Initiate a tracer
+  const tracer = trace.getTracer();
 
   const loadData = async () => {
     try {
@@ -65,8 +70,19 @@ const checkAuth = async () => {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
 
-    loadData();
-    checkAuth();
+    tracer.startActiveSpan('HomeFeedPage', (span) => {
+      tracer.startActiveSpan('load_data', (span) => {
+        span.setAttribute('endpoint', '/api/activities/home');
+        loadData();
+        span.end()
+      })
+      tracer.startActiveSpan('check_auth', (span) => {
+        span.setAttribute('endpoint', '/api/auth');
+        checkAuth();
+        span.end()
+      })
+      span.end()
+    })
   }, [])
 
   return (

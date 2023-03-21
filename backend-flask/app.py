@@ -2,7 +2,8 @@ from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
 import os
-import sys
+# Requests Library - POST requests to honeycomb traces endpoint
+import requests
 
 from services.home_activities import *
 from services.notifications_activities import *
@@ -139,6 +140,25 @@ def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
 
+"""Implement Endpoint to receive spans from the Frontend 
+    and send it to Honeycomb traces API"""
+
+@app.route("/honeycomb/traces", methods=['POST','OPTIONS'])
+@cross_origin(supports_credentials=True)
+def collect_traces():
+  otlp_json_exported_from_frontend = request.json
+  headers = {
+    'Content-Type': 'application/json',
+    'x-honeycomb-team': os.getenv('HONEYCOMB_API_KEY'),
+  }
+
+  response = requests.post(
+    url=os.getenv('HONEYCOMB_TRACES_API'),
+    json=otlp_json_exported_from_frontend,
+    headers=headers
+  )
+
+  return {'success': True}, 200
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():

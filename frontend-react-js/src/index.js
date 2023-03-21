@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+// Import Frontend tracing file 
+import './services/tracing'
 
 const el_main = document.getElementsByTagName('main')[0];
 const root = ReactDOM.createRoot(el_main);
