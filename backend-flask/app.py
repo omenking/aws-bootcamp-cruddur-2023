@@ -67,7 +67,9 @@ provider.add_span_processor(processor)
 
 # X-RAY ----------
 xray_url = os.getenv("AWS_XRAY_URL")
-xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+#xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+xray_recorder.configure(service='backend-flask') # To make sure that all traces are grouped under the created Cruudr group 
+
 
 # HoneyComb
 trace.set_tracer_provider(provider)
