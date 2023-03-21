@@ -24,6 +24,7 @@ article.recover-article .recover-wrapper {
 article.recover-article form {
   padding: 48px;
   flex-grow: 1;
+  color: white;
 }
 
 article.recover-article label {
