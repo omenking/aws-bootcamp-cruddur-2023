@@ -19,7 +19,8 @@
 				"ms-python.vscode-pylance",
 				"donjayamanne.githistory",
 				"GitHub.vscode-pull-request-github",
-				"DanielSanMedium.dscodegpt"
+				"DanielSanMedium.dscodegpt",
+				"snyk-security.snyk-vulnerability-scanner"
 			]
 		}
 	}
