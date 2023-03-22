@@ -258,10 +258,27 @@ aws iam create-role \
   }]
 }"
 
+       {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "ssm:GetParameter",
+            "Resource": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/*"
+        }
+
 aws iam attach-role-policy \
     --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy \
     --role-name CruddurServiceExecutionRole
 ```
+
+{
+  "Sid": "VisualEditor0",
+  "Effect": "Allow",
+  "Action": [
+    "ssm:GetParameters",
+    "ssm:GetParameter"
+  ],
+  "Resource": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/*"
+}
 
 ### Create TaskRole
 
@@ -324,20 +341,28 @@ Create a new folder called `aws/task-defintions` and place the following files i
           "hostPort": 80
         }
       ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "cruddur",
+            "awslogs-region": "ca-central-1",
+            "awslogs-stream-prefix": "backend-flask"
+        }
+      },
       "environment": [
         {"name": "OTEL_SERVICE_NAME", "value": "backend-flask"},
-        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"}
-        {"name": "AWS_COGNITO_USER_POOL_ID", "value": ""}
-        {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "value": ""}
-        {"name": "FRONTEND_URL", "value": ""}
-        {"name": "BACKEND_URL", "value": ""}
+        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"},
+        {"name": "AWS_COGNITO_USER_POOL_ID", "value": ""},
+        {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "value": ""},
+        {"name": "FRONTEND_URL", "value": ""},
+        {"name": "BACKEND_URL", "value": ""},
         {"name": "AWS_DEFAULT_REGION", "value": ""}
       ],
       "secrets": [
         {"name": "AWS_ACCESS_KEY_ID"    , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"},
         {"name": "AWS_SECRET_ACCESS_KEY", "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"},
         {"name": "CONNECTION_URL"       , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/CONNECTION_URL" },
-        {"name": "ROLLBAR_ACCESS_TOKEN" , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" }
+        {"name": "ROLLBAR_ACCESS_TOKEN" , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" },
         {"name": "OTEL_EXPORTER_OTLP_HEADERS" , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" }
         
       ]
@@ -370,6 +395,16 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 80 \
   --cidr 0.0.0.0/0
+```
+
+#### Update RDS SG to allow access for the last security group
+
+```sh
+aws ec2 authorize-security-group-ingress \
+  --group-id $DB_SG_ID \
+  --protocol tcp \
+  --port 4567 \
+  --source-group $CRUD_SERVICE_SG
 ```
 
 ### Create Services

@@ -6,9 +6,15 @@
     {
       "name": "backend-flask",
       "image": "387543059434.dkr.ecr.ca-central-1.amazonaws.com/backend-flask",
-      "cpu": 1024,
+      "cpu": 256,
       "memory": 512,
       "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 4567,
+          "hostPort": 80
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -17,11 +23,21 @@
             "awslogs-stream-prefix": "backend-flask"
         }
       },
-      "portMappings": [
-        {
-          "containerPort": 4567,
-          "hostPort": 80
-        }
+      "environment": [
+        {"name": "OTEL_SERVICE_NAME", "value": "backend-flask"},
+        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"},
+        {"name": "AWS_COGNITO_USER_POOL_ID", "value": "ca-central-1_CQ4wDfnwc"},
+        {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "value": "5b6ro31g97urk767adrbrdj1g5"},
+        {"name": "FRONTEND_URL", "value": "*"},
+        {"name": "BACKEND_URL", "value": "*"},
+        {"name": "AWS_DEFAULT_REGION", "value": "ca-central-1"}
+      ],
+      "secrets": [
+        {"name": "AWS_ACCESS_KEY_ID"    , "valueFrom": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"},
+        {"name": "AWS_SECRET_ACCESS_KEY", "valueFrom": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"},
+        {"name": "CONNECTION_URL"       , "valueFrom": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/CONNECTION_URL" },
+        {"name": "ROLLBAR_ACCESS_TOKEN" , "valueFrom": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" },
+        {"name": "OTEL_EXPORTER_OTLP_HEADERS" , "valueFrom": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" }
       ]
     }
   ]
