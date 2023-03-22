@@ -1,3 +1,4 @@
+import React from 'react';
 import './TrendingsSection.css';
 import TrendItem from '../components/TrendItem';
 

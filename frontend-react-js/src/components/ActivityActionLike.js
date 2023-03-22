@@ -1,3 +1,4 @@
+import React from 'react';
 import {ReactComponent as HeartIcon} from './svg/heart.svg';
 
 export default function ActivityActionLike(props) { 

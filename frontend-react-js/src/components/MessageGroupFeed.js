@@ -1,3 +1,4 @@
+import React from 'react';
 import './MessageGroupFeed.css';
 import MessageGroupItem from './MessageGroupItem';
 

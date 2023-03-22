@@ -1,3 +1,4 @@
+import React from 'react';
 import './TrendItem.css';
 
 export default function TrendItem(props) {

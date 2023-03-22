@@ -1,3 +1,4 @@
+import React from 'react';
 import './SuggestedUserSection.css';
 import SuggestedUserItem from '../components/SuggestedUserItem';
 

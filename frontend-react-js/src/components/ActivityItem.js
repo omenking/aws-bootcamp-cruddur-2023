@@ -1,3 +1,4 @@
+import React from 'react';
 import './ActivityItem.css';
 
 import ActivityContent  from '../components/ActivityContent';
