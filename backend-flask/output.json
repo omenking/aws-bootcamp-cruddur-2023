@@ -1,0 +1,109 @@
+{
+    "Images": [
+        {
+            "Architecture": "x86_64",
+            "CreationDate": "2023-01-12T01:07:55.793Z",
+            "ImageId": "ami-01cf266895d238a4c",
+            "ImageLocation": "amazon/amzn2-ami-ecs-inf-hvm-2.0.20230109-x86_64-ebs",
+            "ImageType": "machine",
+            "Public": true,
+            "OwnerId": "591542846629",
+            "PlatformDetails": "Linux/UNIX",
+            "UsageOperation": "RunInstances",
+            "State": "available",
+            "BlockDeviceMappings": [
+                {
+                    "DeviceName": "/dev/xvda",
+                    "Ebs": {
+                        "DeleteOnTermination": true,
+                        "SnapshotId": "snap-086e3a8a49cbb0818",
+                        "VolumeSize": 30,
+                        "VolumeType": "gp2",
+                        "Encrypted": false
+                    }
+                }
+            ],
+            "Description": "Amazon Linux AMI 2.0.20230109 x86_64 ECS HVM GP2",
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "ImageOwnerAlias": "amazon",
+            "Name": "amzn2-ami-ecs-inf-hvm-2.0.20230109-x86_64-ebs",
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SriovNetSupport": "simple",
+            "VirtualizationType": "hvm",
+            "DeprecationTime": "2025-01-12T01:07:55.793Z"
+        },
+        {
+            "Architecture": "x86_64",
+            "CreationDate": "2023-01-12T01:10:27.716Z",
+            "ImageId": "ami-026d1591d100ae1a4",
+            "ImageLocation": "amazon/amzn2-ami-ecs-hvm-2.0.20230109-x86_64-ebs",
+            "ImageType": "machine",
+            "Public": true,
+            "OwnerId": "591542846629",
+            "PlatformDetails": "Linux/UNIX",
+            "UsageOperation": "RunInstances",
+            "State": "available",
+            "BlockDeviceMappings": [
+                {
+                    "DeviceName": "/dev/xvda",
+                    "Ebs": {
+                        "DeleteOnTermination": true,
+                        "SnapshotId": "snap-00d52f078d36ecc6f",
+                        "VolumeSize": 30,
+                        "VolumeType": "gp2",
+                        "Encrypted": false
+                    }
+                }
+            ],
+            "Description": "Amazon Linux AMI 2.0.20230109 x86_64 ECS HVM GP2",
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "ImageOwnerAlias": "amazon",
+            "Name": "amzn2-ami-ecs-hvm-2.0.20230109-x86_64-ebs",
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SriovNetSupport": "simple",
+            "VirtualizationType": "hvm",
+            "DeprecationTime": "2025-01-12T01:10:27.716Z"
+        },
+        {
+            "Architecture": "x86_64",
+            "CreationDate": "2023-01-12T01:24:34.660Z",
+            "ImageId": "ami-026cb422f7a2fac5e",
+            "ImageLocation": "amazon/amzn2-ami-ecs-gpu-hvm-2.0.20230109-x86_64-ebs",
+            "ImageType": "machine",
+            "Public": true,
+            "OwnerId": "591542846629",
+            "PlatformDetails": "Linux/UNIX",
+            "UsageOperation": "RunInstances",
+            "State": "available",
+            "BlockDeviceMappings": [
+                {
+                    "DeviceName": "/dev/xvda",
+                    "Ebs": {
+                        "DeleteOnTermination": true,
+                        "SnapshotId": "snap-0e3a5f0d33e7fb305",
+                        "VolumeSize": 30,
+                        "VolumeType": "gp2",
+                        "Encrypted": false
+                    }
+                }
+            ],
+            "Description": "Amazon Linux AMI 2.0.20230109 x86_64 ECS HVM GP2",
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "ImageOwnerAlias": "amazon",
+            "Name": "amzn2-ami-ecs-gpu-hvm-2.0.20230109-x86_64-ebs",
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SriovNetSupport": "simple",
+            "VirtualizationType": "hvm",
+            "DeprecationTime": "2025-01-12T01:24:34.660Z"
+        }
+    ]
+}
+amazon/amzn2-ami-ecs-inf-hvm-2.0.20230109-x86_64-ebs
+amazon/amzn2-ami-ecs-gpu-hvm-2.0.20230109-x86_64-ebs
+ImageLocation amazon/amzn2-ami-ecs-hvm-2.0.20230109-x86_64-ebs  

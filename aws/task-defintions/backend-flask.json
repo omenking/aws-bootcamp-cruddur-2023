@@ -1,0 +1,28 @@
+{
+  "family": "backend-flask",
+  "executionRoleArn": "arn:aws:iam::387543059434:role/CruddurServiceExecutionRole",
+  "taskRoleArn": "arn:aws:iam::387543059434:role/CruddurTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "backend-flask",
+      "image": "387543059434.dkr.ecr.ca-central-1.amazonaws.com/backend-flask",
+      "cpu": 1024,
+      "memory": 512,
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "cruddur",
+            "awslogs-region": "ca-central-1",
+            "awslogs-stream-prefix": "backend-flask"
+        }
+      },
+      "portMappings": [
+        {
+          "containerPort": 4567,
+          "hostPort": 80
+        }
+      ]
+    }
+  ]
+}
