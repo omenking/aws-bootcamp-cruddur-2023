@@ -24,7 +24,7 @@
    aws-xray-sdk
   ```
 
-  Edit docker-compose.yml and Add:
+  Edit [docker-compose.yml](../docker-compose.yml) and Add:
 
   ```
   version: "3.8"
@@ -178,7 +178,7 @@
    watchtower
   ```
 
-  Update ![docker-compose.yml] (https://github.com/Peter2220/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml)
+  Update [docker-compose.yml](../docker-compose.yml)
 
   ```
   version: "3.8"
@@ -310,7 +310,7 @@
   requests
   ```
 
-  Update [docker-compose.yaml](../docker-compose.yml) to make requests to the Honeycomb traces endpoint
+  Update [docker-compose.yml](../docker-compose.yml) to make requests to the Honeycomb traces endpoint
 
   ```yaml
   ---
