@@ -58,7 +58,9 @@ aws logs put-retention-policy --log-group-name cruddur --retention-in-days 1
 ## Create ECS Cluster
 
 ```sh
-aws ecs create-cluster --cluster-name cruddur
+aws ecs create-cluster \
+--cluster-name cruddur \
+--service-connect-defaults namespace=cruddur
 ```
 
 ## Create Launch Template
@@ -117,7 +119,10 @@ aws iam add-role-to-instance-profile --instance-profile-name cruddur-instance-pr
 
 We need the default VPC ID
 ```sh
-export DEFAULT_VPC_ID=$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" --query "Vpcs[0].VpcId" --output text)
+export DEFAULT_VPC_ID=$(aws ec2 describe-vpcs \
+--filters "Name=isDefault, Values=true" \
+--query "Vpcs[0].VpcId" \
+--output text)
 echo $DEFAULT_VPC_ID
 ```
 
@@ -312,6 +317,9 @@ aws iam create-role \
     }
   }]
 }"
+```
+
+```json
 
        {
             "Sid": "VisualEditor0",
@@ -320,11 +328,13 @@ aws iam create-role \
             "Resource": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/*"
         }
 
+```sh
 aws iam attach-role-policy \
     --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy \
     --role-name CruddurServiceExecutionRole
 ```
 
+```json
 {
   "Sid": "VisualEditor0",
   "Effect": "Allow",
@@ -334,6 +344,7 @@ aws iam attach-role-policy \
   ],
   "Resource": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/*"
 }
+```
 
 #### Create TaskRole
 
@@ -383,6 +394,7 @@ Create a new folder called `aws/task-defintions` and place the following files i
   "family": "backend-flask",
   "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/CruddurServiceExecutionRole",
   "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/CruddurTaskRole",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "backend-flask",
@@ -444,12 +456,22 @@ export CRUD_SERVICE_SG=$(aws ec2 create-security-group \
 echo $CRUD_SERVICE_SG
 ```
 
+
 ```sh
 aws ec2 authorize-security-group-ingress \
   --group-id $CRUD_SERVICE_SG \
   --protocol tcp \
   --port 80 \
   --cidr 0.0.0.0/0
+```
+
+
+> if we need to get the sg group id  again
+```sh
+export CRUD_SERVICE_SG=$(aws ec2 describe-security-groups \
+  --filters Name=group-name,Values=crud-srv-sg \
+  --query 'SecurityGroups[*].GroupId' \
+  --output text)
 ```
 
 #### Update RDS SG to allow access for the last security group
@@ -466,13 +488,10 @@ aws ec2 authorize-security-group-ingress \
 ### Create Services
 
 ```sh
-aws ecs create-service \
-  --service-name backend-flask \
-  --cluster cruddur \
-  --task-definition backend-flask \
-  --desired-count 1 \
-  --launch-type EC2
+aws ecs create-service --cli-input-json file://aws/json/backend-flask-serv.json
 ```
+
+> Auto Assign is not supported by EC2 launch type for services
 
 This is for when we are uing a NetworkMode of awsvpc
 > --network-configuration "awsvpcConfiguration={subnets=[$DEFAULT_SUBNET_IDS],securityGroups=[$SERVICE_CRUD_SG],assignPublicIp=ENABLED}"

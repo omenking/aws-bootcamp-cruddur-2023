@@ -2,6 +2,7 @@
   "family": "backend-flask",
   "executionRoleArn": "arn:aws:iam::387543059434:role/CruddurServiceExecutionRole",
   "taskRoleArn": "arn:aws:iam::387543059434:role/CruddurTaskRole",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "backend-flask",
@@ -11,8 +12,10 @@
       "essential": true,
       "portMappings": [
         {
+          "name": "backend-flask",
           "containerPort": 4567,
-          "hostPort": 80
+          "protocol": "tcp", 
+          "appProtocol": "http"
         }
       ],
       "logConfiguration": {
