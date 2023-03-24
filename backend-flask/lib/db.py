@@ -7,7 +7,6 @@ from flask import current_app as app
 class Db:
   def __init__(self):
     self.init_pool()
-
   def template(self,*args):
     pathing = list((app.root_path,'db','sql',) + args)
     pathing[-1] = pathing[-1] + ".sql"

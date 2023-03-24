@@ -1,5 +1,52 @@
 # Week 6 — Deploying Containers
 
+## Test RDS Connecetion
+
+Add this `test` script into `db` so we can easily check our connection from our container.
+
+```sh
+#!/usr/bin/env python3
+
+import psycopg
+import os
+import sys
+
+connection_url = os.getenv("CONNECTION_URL")
+
+conn = None
+try:
+  print('attempting connection')
+  conn = psycopg.connect(connection_url)
+  print("Connection successful!")
+except psycopg.Error as e:
+  print("Unable to connect to the database:", e)
+finally:
+  conn.close()
+```
+
+## Task Flask Script
+
+We'll add the following endpoint for our flask app:
+
+```py
+@app.route('/api/health-check')
+def health_check():
+  return {'success': True}, 200
+```
+
+We'll create a new bin script at `bin/flask/health-check`
+
+```py
+#!/usr/bin/env python3
+
+import urllib.request
+
+response = urllib.request.urlopen('http://localhost:4567/api/health-check')
+if response.getcode() == 200:
+  print("Flask server is running")
+else:
+  print("Flask server is not running")
+```
 
 ## Create CloudWatch Log Group
 
@@ -140,6 +187,13 @@ cat /etc/ecs/ecs.config
 systemctl status ecs
 ```
 
+Consider that we have access to docker and we can see any running containers or shell into them eg:
+
+```
+docker ps
+docker exec -it <container name> /bin/bash
+```
+
 ## Create ECR repo and push image
 
 ### Login to ECR
@@ -227,8 +281,6 @@ docker push $ECR_BACKEND_FLASK_URL:latest
 
 ## Register Task Defintions
 
-### Create Task and Exection Roles for Task Defintion
-
 ### Passing Senstive Data to Task Defintion
 
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html
@@ -242,7 +294,10 @@ aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/ROLLB
 aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" --value "x-honeycomb-team=$HONEYCOMB_API_KEY"
 ```
 
-### Create ExecutionRole
+### Create Task and Exection Roles for Task Defintion
+
+
+#### Create ExecutionRole
 
 ```sh
 aws iam create-role \
@@ -280,7 +335,7 @@ aws iam attach-role-policy \
   "Resource": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/*"
 }
 
-### Create TaskRole
+#### Create TaskRole
 
 ```sh
 aws iam create-role \
@@ -403,8 +458,9 @@ aws ec2 authorize-security-group-ingress \
 aws ec2 authorize-security-group-ingress \
   --group-id $DB_SG_ID \
   --protocol tcp \
-  --port 4567 \
-  --source-group $CRUD_SERVICE_SG
+  --port 5432 \
+  --source-group $CRUD_SERVICE_SG \
+  --tag-specifications 'ResourceType=security-group,Tags=[{Key=Name,Value=BACKENDFLASK}]'
 ```
 
 ### Create Services
@@ -422,3 +478,28 @@ This is for when we are uing a NetworkMode of awsvpc
 > --network-configuration "awsvpcConfiguration={subnets=[$DEFAULT_SUBNET_IDS],securityGroups=[$SERVICE_CRUD_SG],assignPublicIp=ENABLED}"
 
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html
+
+### Test Service
+
+Use sessions manager to connect to the EC2 instance.
+
+#### Test RDS Connection
+
+Shell into the backend flask container and run the `./bin/db/test` script to ensure we have a database connection
+
+
+#### Test Flask App is running
+
+`./bin/flask/health-check`
+
+Check our forwarding ports for the container
+
+```sh
+docker port <CONTAINER_ID>
+```
+
+
+
+```sh
+docker run --rm -it curlimages/curl --get -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:4567/api/activities/home
+```
