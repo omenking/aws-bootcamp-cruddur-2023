@@ -498,8 +498,14 @@ Check our forwarding ports for the container
 docker port <CONTAINER_ID>
 ```
 
-
+> docker run --rm --link <container_name_or_id>:<alias> curlimages/curl curl <alias>:<port>/<endpoint>
 
 ```sh
-docker run --rm -it curlimages/curl --get -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:4567/api/activities/home
+docker run --rm --link d71eea0b8e93:flask -it curlimages/curl --get -H "Accept: application/json" -H "Content-Type: application/json" http://flask:4567/api/activities/home
+```
+
+#### Check endpoiint against Public IP 
+
+```sh
+docker run --rm -it curlimages/curl --get -H "Accept: application/json" -H "Content-Type: application/json" http://3.97.113.133/api/activities/home
 ```
