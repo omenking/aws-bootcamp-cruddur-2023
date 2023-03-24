@@ -137,6 +137,9 @@ echo $CRUD_CLUSTER_SG
 
 ### Create Launch Template
 
+WE NEED TO HAVE A KEY PAIR SET.
+We can using Sessions Manager without incurring cost when we use the NAT instance.
+
 ```sh
 aws ec2 create-launch-template \
 --launch-template-name cruddur-lt \
