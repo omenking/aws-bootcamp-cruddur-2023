@@ -528,3 +528,28 @@ docker run --rm --link d71eea0b8e93:flask -it curlimages/curl --get -H "Accept: 
 ```sh
 docker run --rm -it curlimages/curl --get -H "Accept: application/json" -H "Content-Type: application/json" http://3.97.113.133/api/activities/home
 ```
+
+### NAT Instance
+
+VNS3 NATe Free (NAT Gateway Appliance)
+
+https://aws.amazon.com/marketplace/pp/prodview-wf7yma4f6mdw4#pdp-usage
+
+### Create new public security group for NAT
+
+
+## Not able to use Sessions Manager to get into cluster EC@ sintance
+
+The instance can hang up for various reasons.
+You need to reboot and it will force a restart after 5 minutes
+So you will have to wait 5 minutes or after a timeout.
+
+You have to use the AWS CLI. 
+You can't use the AWS Console. it will not work as expected.
+
+The console will only do a graceful shutdodwn
+The CLI will do a forceful shutdown after a period of time if graceful shutdown fails.
+
+```sh
+aws ec2 reboot-instances --instance-ids i-0d15aef0618733b6d
+```
