@@ -54,11 +54,11 @@ class HomeActivities:
       if cognito_user_id != None:
         extra_crud = {
           'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
-          'handle':  'Lore',
-          'message': 'My dear brother, it the humans that are the problem',
+          'handle':  'Abby',
+          'message': 'Always ready to give it my all...',
           'created_at': (now - timedelta(hours=1)).isoformat(),
           'expires_at': (now + timedelta(hours=12)).isoformat(),
-          'likes': 1042,
+          'likes': 600,
           'replies': []
         }
         results.insert(0,extra_crud)

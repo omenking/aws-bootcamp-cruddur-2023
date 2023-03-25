@@ -69,7 +69,8 @@ provider.add_span_processor(processor)
 # X-RAY ----------
 xray_url = os.getenv("AWS_XRAY_URL")
 #xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
-xray_recorder.configure(service='backend-flask') # To make sure that all traces are grouped under the created Cruudr group 
+# To make sure that all traces are grouped under the created Cruudr group
+xray_recorder.configure(service='backend-flask')
 
 
 # HoneyComb
@@ -82,6 +83,13 @@ app = Flask(__name__)
 cognito_jwt_token = CognitoJwtToken(
     user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"),
     user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"),
+    region=os.getenv("AWS_DEFAULT_REGION")
+)
+
+# JWT Token
+cognito_jwt_token = CognitoJwtToken(
+    user_pool_id=os.getenv("AWS_COGNITO_USER_POOLS_ID"),
+    user_pool_client_id=os.getenv("AWS_COGNITO_CLIENT_ID"),
     region=os.getenv("AWS_DEFAULT_REGION")
 )
 
@@ -105,6 +113,7 @@ def init_rollbar():
     # send exceptions from `app` to rollbar, using flask's signal system.
     got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
+
 # X-RAY ---------- Disabled to save on spend
 XRayMiddleware(app, xray_recorder)
 
@@ -119,9 +128,11 @@ backend = os.getenv('BACKEND_URL')
 origins = [frontend, backend]
 cors = CORS(
     app,
-    headers=['Content-Type', 'Authorization'],
-    expose_headers='Authorization',
+    resources={r"/api/*": {"origins": origins}},
+    expose_headers="location,link",
     allow_headers="content-type,if-modified-since",
+    expose_headers="location,link,Authorization",
+    headers=['Content-Type', 'Authorization'],
     methods="OPTIONS,GET,HEAD,POST"
 )
 
@@ -140,25 +151,28 @@ def rollbar_test():
     rollbar.report_message('Hello World!', 'warning')
     return "Hello World!"
 
+
 """Implement Endpoint to receive spans from the Frontend 
     and send it to Honeycomb traces API"""
 
-@app.route("/honeycomb/traces", methods=['POST','OPTIONS'])
+
+@app.route("/honeycomb/traces", methods=['POST', 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def collect_traces():
-  otlp_json_exported_from_frontend = request.json
-  headers = {
-    'Content-Type': 'application/json',
-    'x-honeycomb-team': os.getenv('HONEYCOMB_API_KEY'),
-  }
+    otlp_json_exported_from_frontend = request.json
+    headers = {
+        'Content-Type': 'application/json',
+        'x-honeycomb-team': os.getenv('HONEYCOMB_API_KEY'),
+    }
 
-  response = requests.post(
-    url=os.getenv('HONEYCOMB_TRACES_API'),
-    json=otlp_json_exported_from_frontend,
-    headers=headers
-  )
+    response = requests.post(
+        url=os.getenv('HONEYCOMB_TRACES_API'),
+        json=otlp_json_exported_from_frontend,
+        headers=headers
+    )
 
-  return {'success': True}, 200
+    return {'success': True}, 200
+
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
@@ -203,21 +217,23 @@ def data_create_message():
 @app.route("/api/activities/home", methods=['GET'])
 @xray_recorder.capture('activities_home')
 def data_home():
-    access_token = extract_access_token(request.headers)
-    try:
-        claims = cognito_jwt_token.verify(access_token)
-        # authenicatied request
-        app.logger.debug("authenicated")
-        app.logger.debug(claims)
-        app.logger.debug(claims['username'])
-        data = HomeActivities.run(cognito_user_id=claims['username'])
-    except TokenVerifyError as e:
-        # unauthenicatied request
-        app.logger.debug(e)
-        app.logger.debug("unauthenicated")
-        data = HomeActivities.run()
+  access_token = cognito_jwt_token.extract_access_token(request.headers)
+  if access_token == "null": # Acces woken with no value
+    data = HomeActivities.run()
     return data, 200
-    return data, 200
+  
+  # If token is not null
+  try:
+    cognito_jwt_token.verify(access_token)
+    app.logger.debug("Authenicated")
+    app.logger.debug(f"User: {cognito_jwt_token.claims['username']}")
+    data = HomeActivities.run(cognito_user=cognito_jwt_token.claims['username'])
+  except TokenVerifyError as e:
+    app.logger.debug("Authentication Failed")
+    app.logger.debug(e)
+    data = HomeActivities.run()
+
+  return data, 200
 
 
 @app.route("/api/activities/notifications", methods=['GET'])
