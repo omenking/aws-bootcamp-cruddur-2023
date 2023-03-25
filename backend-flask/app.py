@@ -16,7 +16,8 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
+from lib.cognito_jwt_token import CognitoJwtToken
+from lib.jwt_verify_middleware import JWTVerificationMiddleware
 
 # HONEYCOMB
 # app.py updates
@@ -131,7 +132,7 @@ cors = CORS(
     resources={r"/api/*": {"origins": origins}},
     expose_headers="location,link",
     allow_headers="content-type,if-modified-since",
-    expose_headers="location,link,Authorization",
+    #expose_headers="location,link,Authorization",
     headers=['Content-Type', 'Authorization'],
     methods="OPTIONS,GET,HEAD,POST"
 )
