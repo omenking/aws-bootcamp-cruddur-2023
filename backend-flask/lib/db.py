@@ -9,7 +9,12 @@ class Db:
     self.init_pool()
     
   def init_pool(self):
+    
     connection_url = os.getenv("CONNECTION_URL")
+    cyan = '\033[96m'
+    no_color = '\033[0m'
+    print("\n")
+    print(f'{cyan}SQL Statament [{connection_url}]-----{no_color}')
     self.pool = ConnectionPool(connection_url)
   
   def print_sql(self,title,sql,params={}):
