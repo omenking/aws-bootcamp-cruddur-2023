@@ -4,7 +4,7 @@ NO_COLOR='\033[0m'
 LABEL="db-seed"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
-seed_path="$(realpath .)/db/seed.sql"
+seed_path="$(realpath .)/bin/db/seed.sql"
 echo $seed_path
 
 if [ "$1" = "prod" ]; then

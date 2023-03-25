@@ -54,16 +54,6 @@ export default function MessageGroupPage() {
     }
   };  
 
-  const checkAuth = async () => {
-    console.log('checkAuth')
-    // [TODO] Authenication
-    if (Cookies.get('user.logged_in')) {
-      setUser({
-        display_name: Cookies.get('user.name'),
-        handle: Cookies.get('user.username')
-      })
-    }
-  };
 
   React.useEffect(()=>{
     //prevents double call
@@ -72,7 +62,7 @@ export default function MessageGroupPage() {
 
     loadMessageGroupsData();
     loadMessageGroupData();
-    checkAuth();
+    checkAuth(setUser);
   }, [])
   return (
     <article>
