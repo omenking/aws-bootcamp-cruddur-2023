@@ -10,6 +10,16 @@
       "cpu": 256,
       "memory": 512,
       "essential": true,
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "python /backend-flask/bin/flask/health-check"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
       "portMappings": [
         {
           "name": "backend-flask",
