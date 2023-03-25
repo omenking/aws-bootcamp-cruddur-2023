@@ -202,17 +202,46 @@ def data_messages(message_group_uuid):
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_create_message():
-  user_sender_handle = 'andrewbrown'
-  user_receiver_handle = request.json['user_receiver_handle']
-  message = request.json['message']
+  access_token = extract_access_token(request.headers)
 
-  model = CreateMessage.run(message=message,user_sender_handle=user_sender_handle,user_receiver_handle=user_receiver_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
-  return
+  try:
+        claims = cognito_jwt_token.verify(access_token)
+        # authenicatied request
+        app.logger.debug("authenicated")
+        app.logger.debug(claims)
+        cognito_user_id=claims['sub']
+        app.logger.debug(cognito_user_id)
 
+              
+        message_group_uuid   = request.json.get('message_group_uuid',None)
+        user_receiver_handle = request.json.get('handle',None)
+        message = request.json['message']
+
+        if message_group_uuid == None:
+          # Create for the first time
+          model = CreateMessage.run(
+            mode="create",
+            message=message,
+            cognito_user_id=cognito_user_id,
+            user_receiver_handle=user_receiver_handle
+          )
+        else:
+          # Push onto existing Message Group
+          model = CreateMessage.run(
+            mode="update",
+            message=message,
+            message_group_uuid=message_group_uuid,
+            cognito_user_id=cognito_user_id
+          )
+        if model['errors'] is not None:
+          return model['errors'], 422
+        else:
+          return model['data'], 200
+  except TokenVerifyError as e:
+        # unauthenicatied request
+        app.logger.debug(e)
+        app.logger.debug("unauthorized")
+        return {},401;
 @app.route("/api/activities/home", methods=['GET'])
 def data_home():
   data = HomeActivities.run()
