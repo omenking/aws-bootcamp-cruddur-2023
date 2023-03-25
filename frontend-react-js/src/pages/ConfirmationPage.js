@@ -29,6 +29,9 @@ export default function ConfirmationPage() {
       console.log('code resent successfully');
       setCodeSent(true)
     } catch (err) {
+      // does not return a code
+      // does cognito always return english
+      // for this to be an okay match?
       console.log(err)
       if (err.message == 'Username cannot be empty'){
         setErrors("You need to provide an email in order to send Resend Activiation Code")   
@@ -49,7 +52,6 @@ export default function ConfirmationPage() {
     }
     return false
   }
-
 
   let el_errors;
   if (errors){

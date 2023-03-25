@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
 import os
+import sys
 # Requests Library - POST requests to honeycomb traces endpoint
 import requests
 
@@ -16,9 +17,7 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-from lib.cognito_jwt_token import CognitoJwtToken
-from lib.jwt_verify_middleware import JWTVerificationMiddleware
-
+from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 # HONEYCOMB
 # app.py updates
 from opentelemetry import trace
@@ -80,18 +79,10 @@ tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
-# Implement Cognito
 cognito_jwt_token = CognitoJwtToken(
-    user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"),
-    user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"),
-    region=os.getenv("AWS_DEFAULT_REGION")
-)
-
-# JWT Token
-cognito_jwt_token = CognitoJwtToken(
-    user_pool_id=os.getenv("AWS_COGNITO_USER_POOLS_ID"),
-    user_pool_client_id=os.getenv("AWS_COGNITO_CLIENT_ID"),
-    region=os.getenv("AWS_DEFAULT_REGION")
+  user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"), 
+  user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"),
+  region=os.getenv("AWS_DEFAULT_REGION")
 )
 
 # ROLLBAR --------
@@ -218,24 +209,25 @@ def data_create_message():
 @app.route("/api/activities/home", methods=['GET'])
 @xray_recorder.capture('activities_home')
 def data_home():
-  access_token = cognito_jwt_token.extract_access_token(request.headers)
-  if access_token == "null": # Acces woken with no value
-    data = HomeActivities.run()
-    return data, 200
   
-  # If token is not null
+  app.logger.info('AUTH HEADER:')
+  app.logger.info(request.headers.get('Authorization'))  
+  
+  access_token = extract_access_token(request.headers)
   try:
-    cognito_jwt_token.verify(access_token)
-    app.logger.debug("Authenicated")
-    app.logger.debug(f"User: {cognito_jwt_token.claims['username']}")
-    data = HomeActivities.run(cognito_user=cognito_jwt_token.claims['username'])
+    claims = cognito_jwt_token.verify(access_token)
+    # Authenticated Request
+    app.logger.debug("authenicated")
+    app.logger.debug(claims)
+    app.logger.debug(claims['username'])
+    data = HomeActivities.run(cognito_user_id=claims['username'])
   except TokenVerifyError as e:
-    app.logger.debug("Authentication Failed")
+    # Unauthenticated Request
     app.logger.debug(e)
+    app.logger.debug("unauthenicated")
     data = HomeActivities.run()
-
+  
   return data, 200
-
 
 @app.route("/api/activities/notifications", methods=['GET'])
 def data_notifications():
