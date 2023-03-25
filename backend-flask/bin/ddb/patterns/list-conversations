@@ -39,13 +39,15 @@ def get_user_uuids():
 
 my_user_uuid = get_user_uuids()
 print(f"my-uuid: {my_user_uuid}")
+year=datetime.now().year
 
 # define the query parameters
 query_params = {
   'TableName': table_name,
-  'KeyConditionExpression': 'pk = :pk',
+  'KeyConditionExpression': 'pk = :pk and  begins_with(sk,:year)',
   'ExpressionAttributeValues': {
-    ':pk': {'S': f"GRP#{my_user_uuid}"}
+    ':pk': {'S': f"GRP#{my_user_uuid}"},
+    ':year': {'S': str(year)}
   },
   'ReturnConsumedCapacity': 'TOTAL'
 }

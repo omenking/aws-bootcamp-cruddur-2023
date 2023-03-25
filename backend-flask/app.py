@@ -43,9 +43,9 @@ import rollbar.contrib.flask
 from flask import got_request_exception
 
 # HoneyComb -- initialize
-provider = TracerProvider()
-processor = BatchSpanProcessor(OTLPSpanExporter())
-provider.add_span_processor(processor)
+# provider = TracerProvider()
+# processor = BatchSpanProcessor(OTLPSpanExporter())
+# provider.add_span_processor(processor)
 
 #CloudWatch
 # Configuring Logger to Use CloudWatch
@@ -57,14 +57,14 @@ provider.add_span_processor(processor)
 # LOGGER.addHandler(cw_handler)
 # LOGGER.info("test log")
 
-rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+# rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
 
 
-simpleProcessor = BatchSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(simpleProcessor)
+# simpleProcessor = BatchSpanProcessor(ConsoleSpanExporter())
+# provider.add_span_processor(simpleProcessor)
 
-trace.set_tracer_provider(provider)
-tracer = trace.get_tracer(__name__)
+# trace.set_tracer_provider(provider)
+# tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
@@ -170,17 +170,34 @@ def data_message_groups():
         return {}, 401
   
 
-@app.route("/api/messages/@<string:handle>", methods=['GET'])
-def data_messages(handle):
-  user_sender_handle = 'andrewbrown'
-  user_receiver_handle = request.args.get('user_reciever_handle')
+@app.route("/api/messages/<string:message_group_uuid>", methods=['GET'])
+def data_messages(message_group_uuid):
+  access_token = extract_access_token(request.headers)
 
-  model = Messages.run(user_sender_handle=user_sender_handle, user_receiver_handle=user_receiver_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
-  return
+  try:
+        claims = cognito_jwt_token.verify(access_token)
+        # authenicatied request
+        app.logger.debug("authenicated")
+        app.logger.debug(claims)
+        cognito_user_id=claims['sub']
+        app.logger.debug(cognito_user_id)
+
+              
+        model = Messages.run(
+          cognito_user_id=cognito_user_id,
+          message_group_uuid=message_group_uuid
+        )
+        if model['errors'] is not None:
+          return model['errors'], 422
+        else:
+          return model['data'], 200
+        return
+  except TokenVerifyError as e:
+        # unauthenicatied request
+        app.logger.debug(e)
+        app.logger.debug("unauthenicated")
+        return {}, 401
+        
 
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
