@@ -55,4 +55,10 @@
     // "DB_SG_RULE_ID": "${localEnv:DB_SG_RULE_ID}"
   },
   "remoteUser": "bootcamp"
+//   "postAttachCommand": {
+//     "npm-init": "cd /workspace/aws-bootcamp-cruddur-2023/frontend-react-js && npm i",
+//     "pip-prep": "cd /workspaces/aws-bootcamp-cruddur-2023/backend-flask && pip install -r requirements.txt",
+//     "ip-update": "export LOCAL_IP=$(curl -s ifconfig.me) && /workspaces/aws-bootcamp-cruddur-2023/backend-flask/bin/db-update-sg-rule"
+//   }
+// }
 }

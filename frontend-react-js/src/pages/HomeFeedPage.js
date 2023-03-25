@@ -34,7 +34,7 @@ export default function HomeFeedPage() {
         },
         method: "GET",
       });
-
+      var endTime = performance.now()
       let resJson = await res.json();
       if (res.status === 200) {
         setActivities(resJson);
