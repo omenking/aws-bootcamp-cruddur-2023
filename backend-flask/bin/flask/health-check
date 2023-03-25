@@ -5,5 +5,7 @@ import urllib.request
 response = urllib.request.urlopen('http://localhost:4567/api/health-check')
 if response.getcode() == 200:
   print("[OK] Flask server is running")
+  exit(0) # success
 else:
   print("[BAD] Flask server is not running")
+  exit(1) # false
