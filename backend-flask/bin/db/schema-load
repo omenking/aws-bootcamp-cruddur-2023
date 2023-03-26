@@ -1,6 +1,5 @@
 #! /usr/bin/bash
 
-#echo "==db-schema-load"
 CYAN='\033[1;36m'
 NO_COLOR='\033[0m'
 LABEL="db-schema-load"
@@ -16,6 +15,5 @@ else
   URL=$CONNECTION_URL
 fi
 
-
-psql $CONNECTION_URL cruddur < $schema_path
+psql $URL cruddur < $schema_path
 
