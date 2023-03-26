@@ -217,8 +217,11 @@ def data_create_message():
         message_group_uuid   = request.json.get('message_group_uuid',None)
         user_receiver_handle = request.json.get('handle',None)
         message = request.json['message']
+        print("Debug 123")
 
         if message_group_uuid == None:
+      
+          print("Create Create Debug")
           # Create for the first time
           model = CreateMessage.run(
             mode="create",
@@ -227,6 +230,8 @@ def data_create_message():
             user_receiver_handle=user_receiver_handle
           )
         else:
+          print("Update")
+
           # Push onto existing Message Group
           model = CreateMessage.run(
             mode="update",
