@@ -377,9 +377,22 @@ docker push $ECR_BACKEND_FLASK_URL:latest
 
 
 ```sh
-docker build -t frontend-react-js -f Dockerfile.prod .
+docker build \
+--build-arg REACT_APP_BACKEND_URL="https://4567-$GITPOD_WORKSPACE_ID.$GITPOD_WORKSPACE_CLUSTER_HOST" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="ca-central-1_CQ4wDfnwc" \
+--build-arg REACT_APP_CLIENT_ID="5b6ro31g97urk767adrbrdj1g5" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
 ```
 
+If you want to run and test it
+
+```sh
+docker run --rm -p 3000:3000 -it frontend-react-js 
+```
 
 ## Register Task Defintions
 

@@ -1,9 +1,20 @@
 # Base Image ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 FROM node:16.18 AS build
 
+ARG REACT_APP_BACKEND_URL
+ARG REACT_APP_AWS_PROJECT_REGION
+ARG REACT_APP_AWS_COGNITO_REGION
+ARG REACT_APP_AWS_USER_POOLS_ID
+ARG REACT_APP_CLIENT_ID
+
+ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+ENV REACT_APP_AWS_PROJECT_REGION=$REACT_APP_AWS_PROJECT_REGION
+ENV REACT_APP_AWS_COGNITO_REGION=$REACT_APP_AWS_COGNITO_REGION
+ENV REACT_APP_AWS_USER_POOLS_ID=$REACT_APP_AWS_USER_POOLS_ID
+ENV REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
+
 COPY . ./frontend-react-js
 WORKDIR /frontend-react-js
-#COPY package*.json ./
 RUN npm install
 RUN npm run build
 
@@ -15,4 +26,3 @@ COPY --from=build /frontend-react-js/build /usr/share/nginx/html
 COPY --from=build /frontend-react-js/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
