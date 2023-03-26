@@ -188,6 +188,14 @@ export ECS_INSTANCE_PROFILE_ARN=$(aws iam create-instance-profile --instance-pro
 aws iam add-role-to-instance-profile --instance-profile-name cruddur-instance-profile --role-name session-manager-role
 ```
 
+Get instance profile arn after creation
+```sh
+export ECS_INSTANCE_PROFILE_ARN=$(aws iam get-instance-profile \
+--instance-profile-name cruddur-instance-profile \
+--query 'InstanceProfile.Arn' \
+--output text)
+```
+
 
 ### Create Launch Template Security Group
 
@@ -200,6 +208,7 @@ export DEFAULT_VPC_ID=$(aws ec2 describe-vpcs \
 echo $DEFAULT_VPC_ID
 ```
 
+Create 
 ```sh
 export CRUD_CLUSTER_SG=$(aws ec2 create-security-group \
   --group-name cruddur-ecs-cluster-sg \
@@ -207,6 +216,15 @@ export CRUD_CLUSTER_SG=$(aws ec2 create-security-group \
   --vpc-id $DEFAULT_VPC_ID \
   --query "GroupId" --output text)
 echo $CRUD_CLUSTER_SG
+```
+
+Get the Group ID (after its created)
+
+```sh
+export CRUD_CLUSTER_SG=$(aws ec2 describe-security-groups \
+--group-names cruddur-ecs-cluster-sg \
+--query 'SecurityGroups[0].GroupId' \
+--output text)
 ```
 
 ### Create Launch Template
@@ -218,14 +236,10 @@ We can using Sessions Manager without incurring cost when we use the NAT instanc
 aws ec2 create-launch-template \
 --launch-template-name cruddur-lt \
 --version-description "Launch Template for Cruddur ECS EC2 Cluster" \
---tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=cruddur-cluster}]' \
 --launch-template-data "{
     \"ImageId\": \"$ECS_OPTIMIZED_AMI\",
     \"InstanceType\": \"t3.micro\",
     \"SecurityGroupIds\": [\"$CRUD_CLUSTER_SG\"],
-    \"NetworkInterfaces\": [
-      \"SubnetId\": $SUBNET_NAT_A
-    ],
     \"IamInstanceProfile\": {
         \"Arn\": \"$ECS_INSTANCE_PROFILE_ARN\"
     },
