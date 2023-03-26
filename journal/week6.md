@@ -48,6 +48,80 @@ else:
   print("Flask server is not running")
 ```
 
+### NAT Instance
+
+VNS3 NATe Free (NAT Gateway Appliance)
+
+https://aws.amazon.com/marketplace/pp/prodview-wf7yma4f6mdw4#pdp-usage
+
+
+### Create a subnet just for the NAT
+
+Lets see all the avaliable AZs
+```sh
+aws ec2 describe-availability-zones \
+  --region $AWS_DEFAULT_REGION \
+  --query 'AvailabilityZones[].ZoneName' \
+  --output table
+```
+
+```sh
+aws ec2 create-subnet \
+--vpc-id $DEFAULT_VPC_ID \
+--cidr-block 172.31.48.0/20 \
+--availability-zone ca-central-1a \
+--tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-main}]'
+```
+
+### Create three new subnets for the NAT
+
+```sh
+export SUBNET_NAT_A=$(aws ec2 create-subnet \
+--vpc-id $DEFAULT_VPC_ID \
+--cidr-block '172.31.64.0/20' \
+--availability-zone ca-central-1a \
+--tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-a}]' \
+--query 'Subnet.SubnetId' \
+--output text)
+echo $SUBNET_NAT_A
+```
+
+```sh
+export SUBNET_NAT_B=$(aws ec2 create-subnet \
+--vpc-id $DEFAULT_VPC_ID \
+--cidr-block '172.31.80.0/20' \
+--availability-zone ca-central-1b \
+--tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-b}]' \
+--query 'Subnet.SubnetId' \
+--output text)
+echo $SUBNET_NAT_B
+```
+
+```sh
+export SUBNET_NAT_D=$(aws ec2 create-subnet \
+--vpc-id $DEFAULT_VPC_ID \
+--cidr-block '172.31.96.0/20' \
+--availability-zone ca-central-1d \
+--tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-d}]' \
+--query 'Subnet.SubnetId' \
+--output text)
+echo $SUBNET_NAT_D
+```
+
+> probably don't need these
+```sh
+aws ec2 modify-subnet-attribute --subnet-id $SUBNET_NAT_A --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id $SUBNET_NAT_B --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id $SUBNET_NAT_D --map-public-ip-on-launch
+```
+
+### Create the NAT Instance
+
+We'll need to create a NAT Instance for the EC2 Marketplace for the
+VNS3 NATe Free (NAT Gateway Appliance)
+
+Once created we need to get its ENI, and we'll create a Route Table that sends `0.0.0.0/0` to that Appliance ENI 
+
 ## Create CloudWatch Log Group
 
 ```sh
@@ -144,10 +218,14 @@ We can using Sessions Manager without incurring cost when we use the NAT instanc
 aws ec2 create-launch-template \
 --launch-template-name cruddur-lt \
 --version-description "Launch Template for Cruddur ECS EC2 Cluster" \
+--tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=cruddur-cluster}]' \
 --launch-template-data "{
     \"ImageId\": \"$ECS_OPTIMIZED_AMI\",
     \"InstanceType\": \"t3.micro\",
     \"SecurityGroupIds\": [\"$CRUD_CLUSTER_SG\"],
+    \"NetworkInterfaces\": [
+      \"SubnetId\": $SUBNET_NAT_A
+    ],
     \"IamInstanceProfile\": {
         \"Arn\": \"$ECS_INSTANCE_PROFILE_ARN\"
     },
@@ -532,16 +610,9 @@ docker run --rm --link d71eea0b8e93:flask -it curlimages/curl --get -H "Accept: 
 docker run --rm -it curlimages/curl --get -H "Accept: application/json" -H "Content-Type: application/json" http://3.97.113.133/api/activities/home
 ```
 
-### NAT Instance
-
-VNS3 NATe Free (NAT Gateway Appliance)
-
-https://aws.amazon.com/marketplace/pp/prodview-wf7yma4f6mdw4#pdp-usage
-
-### Create new public security group for NAT
 
 
-## Not able to use Sessions Manager to get into cluster EC@ sintance
+## Not able to use Sessions Manager to get into cluster EC2 sintance
 
 The instance can hang up for various reasons.
 You need to reboot and it will force a restart after 5 minutes
