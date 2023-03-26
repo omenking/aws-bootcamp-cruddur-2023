@@ -377,7 +377,7 @@ docker push $ECR_BACKEND_FLASK_URL:latest
 
 
 ```sh
-docker build -t frontened-react-js -f Dockerfile.prod .
+docker build -t frontend-react-js -f Dockerfile.prod .
 ```
 
 
