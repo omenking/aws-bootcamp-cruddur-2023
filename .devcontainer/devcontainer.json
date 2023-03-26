@@ -19,7 +19,13 @@
 				"ms-python.vscode-pylance",
 				"donjayamanne.githistory",
 				"GitHub.vscode-pull-request-github",
-				"DanielSanMedium.dscodegpt"
+				"DanielSanMedium.dscodegpt",
+<<<<<<< HEAD
+				"ms-python.python",
+				"vscodevim.vim"
+=======
+				"snyk-security.snyk-vulnerability-scanner"
+>>>>>>> 864a0083016a9fa58a8c2cbd9e8e042f9e17e5b1
 			]
 		}
 	}
