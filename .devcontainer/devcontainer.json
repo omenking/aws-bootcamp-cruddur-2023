@@ -63,7 +63,7 @@
       "CONNECTION_URL": "${localEnv:CONNECTION_URL}",
       "REACT_APP_AWS_USER_POOLS_ID": "${localEnv:REACT_APP_AWS_USER_POOLS_ID}",
       "REACT_APP_CLIENT_ID": "${localEnv:REACT_APP_AWS_USER_POOLS_ID}"
-      // "PROD_CONNECTION_URL": "${localEnv:PROD_CONNECTION_URL}",
+      // "PROD_CONNECTION_URL": "${localEnv:PROD_CONNECTION_URL}"
       // "DB_SG_ID": "${localEnv:DB_SG_ID}",
       // "DB_SG_RULE_ID": "${localEnv:DB_SG_RULE_ID}"
     },
