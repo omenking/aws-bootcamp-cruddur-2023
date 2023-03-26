@@ -335,16 +335,10 @@ docker tag python:3.10-slim-buster $ECR_PYTHON_URL:3.10-slim-buster
 docker push $ECR_PYTHON_URL:3.10-slim-buster
 ```
 
-
 ### For Flask
 
 In your flask dockerfile update the from to instead of using DockerHub's python image
 you use your own eg.
-
-
-```dockerfile
-FROM FROM 387543059434.dkr.ecr.ca-central-1.amazonaws.com/cruddur-python:3.10-slim-buster
-```
 
 > remember to put the :latest tag on the end
 
@@ -378,6 +372,14 @@ docker tag backend-flask:latest $ECR_BACKEND_FLASK_URL:latest
 ```sh
 docker push $ECR_BACKEND_FLASK_URL:latest
 ```
+
+### For Frontend React
+
+
+```sh
+docker build -t frontened-react-js -f Dockerfile.prod .
+```
+
 
 ## Register Task Defintions
 
@@ -499,8 +501,10 @@ Create a new folder called `aws/task-defintions` and place the following files i
       "essential": true,
       "portMappings": [
         {
+          "name": "backend-flask",
           "containerPort": 4567,
-          "hostPort": 80
+          "protocol": "tcp", 
+          "appProtocol": "http"
         }
       ],
       "logConfiguration": {
@@ -527,6 +531,50 @@ Create a new folder called `aws/task-defintions` and place the following files i
         {"name": "ROLLBAR_ACCESS_TOKEN" , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" },
         {"name": "OTEL_EXPORTER_OTLP_HEADERS" , "valueFrom": "arn:aws:ssm:AWS_REGION:AWS_ACCOUNT_ID:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" }
         
+      ]
+    }
+  ]
+}
+```
+
+`frontend-react.json`
+
+```json
+{
+  "family": "frontend-react-js",
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/CruddurServiceExecutionRole",
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/CruddurTaskRole",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "frontend-react-js",
+      "image": "BACKEND_FLASK_IMAGE_URL",
+      "cpu": 256,
+      "memory": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "name": "frontend-react-js",
+          "containerPort": 3000,
+          "protocol": "tcp", 
+          "appProtocol": "http"
+        }
+      ],
+
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "cruddur",
+            "awslogs-region": "ca-central-1",
+            "awslogs-stream-prefix": "frontend-react"
+        }
+      },
+      "environment": [
+        {"name": "REACT_APP_BACKEND_URL", "value": "https://api.cruddur.com"},
+        {"name": "REACT_APP_AWS_PROJECT_REGION", "value": "ca-central-1"},
+        {"name": "REACT_APP_AWS_COGNITO_REGION", "value": "ca-central-1"},
+        {"name": "REACT_APP_AWS_USER_POOLS_ID", "value": "ca-central-1_CQ4wDfnwc"},
+        {"name": "REACT_APP_CLIENT_ID", "value": "5b6ro31g97urk767adrbrdj1g5"}
       ]
     }
   ]

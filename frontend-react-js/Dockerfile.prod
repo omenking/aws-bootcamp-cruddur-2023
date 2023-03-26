@@ -1,0 +1,32 @@
+# Base image
+FROM nginx:1.23.3-alpine AS build
+
+# Set working directory
+WORKDIR /frontend-react-js
+
+# Copy package.json and package-lock.json files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY . ./frontend-react-js
+
+# Build the React app
+RUN npm run build
+
+# New base image
+FROM nginx:1.23.3-alpine
+
+# Copy the build output to the nginx server
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy custom nginx config file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose the container's port
+EXPOSE 3000
+
+# Start nginx server
+CMD ["nginx", "-g", "daemon off;"]

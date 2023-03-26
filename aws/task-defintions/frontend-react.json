@@ -1,0 +1,39 @@
+{
+  "family": "frontend-react-js",
+  "executionRoleArn": "arn:aws:iam::387543059434:role/CruddurServiceExecutionRole",
+  "taskRoleArn": "arn:aws:iam::387543059434:role/CruddurTaskRole",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "frontend-react-js",
+      "image": "387543059434.dkr.ecr.ca-central-1.amazonaws.com/frontend-react",
+      "cpu": 256,
+      "memory": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "name": "frontend-react-js",
+          "containerPort": 8000,
+          "protocol": "tcp", 
+          "appProtocol": "http"
+        }
+      ],
+
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "cruddur",
+            "awslogs-region": "ca-central-1",
+            "awslogs-stream-prefix": "frontend-react-js"
+        }
+      },
+      "environment": [
+        {"name": "REACT_APP_BACKEND_URL", "value": "https://api.cruddur.com"},
+        {"name": "REACT_APP_AWS_PROJECT_REGION", "value": "ca-central-1"},
+        {"name": "REACT_APP_AWS_COGNITO_REGION", "value": "ca-central-1"},
+        {"name": "REACT_APP_AWS_USER_POOLS_ID", "value": "ca-central-1_CQ4wDfnwc"},
+        {"name": "REACT_APP_CLIENT_ID", "value": "5b6ro31g97urk767adrbrdj1g5"}
+      ]
+    }
+  ]
+}
