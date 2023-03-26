@@ -5,6 +5,7 @@ from flask import request
 from flask_cors import CORS, cross_origin
 import os
 
+from services.users_short import *
 from services.notification_activities import *
 from services.home_activities import *
 from services.user_activities import *
@@ -43,9 +44,9 @@ import rollbar.contrib.flask
 from flask import got_request_exception
 
 # HoneyComb -- initialize
-provider = TracerProvider()
-processor = BatchSpanProcessor(OTLPSpanExporter())
-provider.add_span_processor(processor)
+# provider = TracerProvider()
+# processor = BatchSpanProcessor(OTLPSpanExporter())
+# provider.add_span_processor(processor)
 
 #CloudWatch
 # Configuring Logger to Use CloudWatch
@@ -57,14 +58,14 @@ provider.add_span_processor(processor)
 # LOGGER.addHandler(cw_handler)
 # LOGGER.info("test log")
 
-rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+# rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
 
 
-simpleProcessor = BatchSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(simpleProcessor)
+# simpleProcessor = BatchSpanProcessor(ConsoleSpanExporter())
+# provider.add_span_processor(simpleProcessor)
 
-trace.set_tracer_provider(provider)
-tracer = trace.get_tracer(__name__)
+# trace.set_tracer_provider(provider)
+# tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
@@ -148,39 +149,105 @@ cors = CORS(
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
-  user_handle  = 'andrewbrown'
-  model = MessageGroups.run(user_handle=user_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
+  access_token = extract_access_token(request.headers)
 
-@app.route("/api/messages/@<string:handle>", methods=['GET'])
-def data_messages(handle):
-  user_sender_handle = 'andrewbrown'
-  user_receiver_handle = request.args.get('user_reciever_handle')
+  try:
+        claims = cognito_jwt_token.verify(access_token)
+        # authenicatied request
+        app.logger.debug("authenicated")
+        app.logger.debug(claims)
+        cognito_user_id=claims['sub']
+        app.logger.debug(cognito_user_id)
 
-  model = Messages.run(user_sender_handle=user_sender_handle, user_receiver_handle=user_receiver_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
-  return
+        model = MessageGroups.run(cognito_user_id=cognito_user_id)
+        if model['errors'] is not None:
+          return model['errors'], 422
+        else:
+          return model['data'], 200
+  except TokenVerifyError as e:
+        # unauthenicatied request
+        app.logger.debug(e)
+        app.logger.debug("unauthenicated")
+        return {}, 401
+  
+
+@app.route("/api/messages/<string:message_group_uuid>", methods=['GET'])
+def data_messages(message_group_uuid):
+  access_token = extract_access_token(request.headers)
+
+  try:
+        claims = cognito_jwt_token.verify(access_token)
+        # authenicatied request
+        app.logger.debug("authenicated")
+        app.logger.debug(claims)
+        cognito_user_id=claims['sub']
+        app.logger.debug(cognito_user_id)
+
+              
+        model = Messages.run(
+          cognito_user_id=cognito_user_id,
+          message_group_uuid=message_group_uuid
+        )
+        if model['errors'] is not None:
+          return model['errors'], 422
+        else:
+          return model['data'], 200
+        return
+  except TokenVerifyError as e:
+        # unauthenicatied request
+        app.logger.debug(e)
+        app.logger.debug("unauthenicated")
+        return {}, 401
+        
 
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_create_message():
-  user_sender_handle = 'andrewbrown'
-  user_receiver_handle = request.json['user_receiver_handle']
-  message = request.json['message']
+  access_token = extract_access_token(request.headers)
 
-  model = CreateMessage.run(message=message,user_sender_handle=user_sender_handle,user_receiver_handle=user_receiver_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
-  return
+  try:
+        claims = cognito_jwt_token.verify(access_token)
+        # authenicatied request
+        app.logger.debug("authenicated")
+        app.logger.debug(claims)
+        cognito_user_id=claims['sub']
+        app.logger.debug(cognito_user_id)
 
+              
+        message_group_uuid   = request.json.get('message_group_uuid',None)
+        user_receiver_handle = request.json.get('handle',None)
+        message = request.json['message']
+        print("Debug 123")
+
+        if message_group_uuid == None:
+      
+          print("Create Create Debug")
+          # Create for the first time
+          model = CreateMessage.run(
+            mode="create",
+            message=message,
+            cognito_user_id=cognito_user_id,
+            user_receiver_handle=user_receiver_handle
+          )
+        else:
+          print("Update")
+
+          # Push onto existing Message Group
+          model = CreateMessage.run(
+            mode="update",
+            message=message,
+            message_group_uuid=message_group_uuid,
+            cognito_user_id=cognito_user_id
+          )
+        if model['errors'] is not None:
+          return model['errors'], 422
+        else:
+          return model['data'], 200
+  except TokenVerifyError as e:
+        # unauthenicatied request
+        app.logger.debug(e)
+        app.logger.debug("unauthorized")
+        return {},401;
 @app.route("/api/activities/home", methods=['GET'])
 def data_home():
   data = HomeActivities.run()
@@ -212,7 +279,7 @@ def data_search():
 @app.route("/api/activities", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_activities():
-  user_handle  = 'andrewbrown'
+  user_handle  = 'cswkmab'
   message = request.json['message']
   ttl = request.json['ttl']
   model = CreateActivity.run(message, user_handle, ttl)
@@ -238,6 +305,14 @@ def data_activities_reply(activity_uuid):
   else:
     return model['data'], 200
   return
+
+@app.route("/api/users/@<string:handle>/short", methods=['GET'])
+def data_users_short(handle):
+  data = UsersShort.run(handle)
+  return data, 200
+
+if __name__ == "__main__":
+  app.run(debug=True)
 
 if __name__ == "__main__":
   app.run(debug=True)

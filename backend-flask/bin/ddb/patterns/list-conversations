@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import boto3
+import sys
+import os
+import json
+
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.abspath(os.path.join(current_path, '..','..', '..'))
+sys.path.append(parent_path)
+from lib.db import db
+
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+  if "prod" in sys.argv[1]:
+    attrs = {}
+
+dynamodb = boto3.client('dynamodb',**attrs)
+table_name = 'cruddur-messages'
+
+def get_user_uuids():
+  sql = """
+    SELECT 
+      users.uuid
+    FROM users
+    WHERE
+      users.handle IN(
+        %(handle)s
+        )
+  """
+  uuid = db.query_array_json(sql,{
+    'handle':  'andrewbrown'
+    })
+  return uuid
+
+
+my_user_uuid = get_user_uuids()
+print(f"my-uuid: {my_user_uuid}")
+year=datetime.now().year
+
+# define the query parameters
+query_params = {
+  'TableName': table_name,
+  'KeyConditionExpression': 'pk = :pk and  begins_with(sk,:year)',
+  'ExpressionAttributeValues': {
+    ':pk': {'S': f"GRP#{my_user_uuid}"},
+    ':year': {'S': str(year)}
+  },
+  'ReturnConsumedCapacity': 'TOTAL'
+}
+
+# query the table
+response = dynamodb.query(**query_params)
+
+# print the items returned by the query
+print(json.dumps(response, sort_keys=True, indent=2))
