@@ -559,3 +559,30 @@ The CLI will do a forceful shutdown after a period of time if graceful shutdown 
 ```sh
 aws ec2 reboot-instances --instance-ids i-0d15aef0618733b6d
 ```
+ 
+ ### Connection via Sessions Manaager (Fargate)
+ 
+ https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-linux
+ https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-verify
+ 
+ Install for Ubuntu
+ ```sh
+ curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+ sudo dpkg -i session-manager-plugin.deb
+ ```
+ 
+ Verify its working
+ ```sh
+ session-manager-plugin
+ ```
+ 
+Connect to the container
+ ```sh
+aws ecs execute-command  \
+--region $AWS_DEFAULT_REGION \
+--cluster cruddur \
+--task arn:aws:ecs:ca-central-1:387543059434:task/cruddur/dceb2ebdc11c49caadd64e6521c6b0c7 \
+--container backend-flask \
+--command "/bin/bash" \
+--interactive
+```
