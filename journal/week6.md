@@ -497,11 +497,11 @@ aws ec2 authorize-security-group-ingress \
 ### Create Services
 
 ```sh
-aws ecs create-service --cli-input-json file://aws/json/backend-flask-serv.json
+aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.json
 ```
 
 ```sh
-aws ecs create-service --cli-input-json file://aws/json/frontend-react-js-serv.json
+aws ecs create-service --cli-input-json file://aws/json/service-frontend-react-js.json
 ```
 
 > Auto Assign is not supported by EC2 launch type for services
