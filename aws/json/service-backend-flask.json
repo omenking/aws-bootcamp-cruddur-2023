@@ -1,11 +1,12 @@
 {
   "cluster": "cruddur",
-  "launchType": "EC2",
+  "launchType": "FARGATE",
   "desiredCount": 1,
   "enableECSManagedTags": true,
   "enableExecuteCommand": true,
   "networkConfiguration": {
     "awsvpcConfiguration": {
+      "assignPublicIp": "ENABLED",
       "securityGroups": [
         "sg-04ca5ebd69e0aec6f"
       ],
