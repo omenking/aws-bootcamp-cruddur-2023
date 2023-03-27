@@ -375,6 +375,21 @@ docker push $ECR_BACKEND_FLASK_URL:latest
 
 ### For Frontend React
 
+#### Create Repo
+```sh
+aws ecr create-repository \
+  --repository-name frontend-react-js \
+  --image-tag-mutability MUTABLE
+```
+
+#### Set URL
+
+```sh
+export ECR_FRONTEND_REACT_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/frontend-react-js"
+echo $ECR_FRONTEND_REACT_URL
+```
+
+#### Build Image
 
 ```sh
 docker build \
@@ -387,6 +402,19 @@ docker build \
 -f Dockerfile.prod \
 .
 ```
+
+#### Tag Image
+
+```sh
+docker tag frontend-react-js:latest $ECR_FRONTEND_REACT_URL:latest
+```
+
+#### Push Image
+
+```sh
+docker push $ECR_FRONTEND_REACT_URL:latest
+```
+
 
 If you want to run and test it
 
@@ -581,14 +609,7 @@ Create a new folder called `aws/task-defintions` and place the following files i
             "awslogs-region": "ca-central-1",
             "awslogs-stream-prefix": "frontend-react"
         }
-      },
-      "environment": [
-        {"name": "REACT_APP_BACKEND_URL", "value": "https://api.cruddur.com"},
-        {"name": "REACT_APP_AWS_PROJECT_REGION", "value": "ca-central-1"},
-        {"name": "REACT_APP_AWS_COGNITO_REGION", "value": "ca-central-1"},
-        {"name": "REACT_APP_AWS_USER_POOLS_ID", "value": "ca-central-1_CQ4wDfnwc"},
-        {"name": "REACT_APP_CLIENT_ID", "value": "5b6ro31g97urk767adrbrdj1g5"}
-      ]
+      }
     }
   ]
 }
@@ -598,6 +619,11 @@ Create a new folder called `aws/task-defintions` and place the following files i
 
 ```sh
 aws ecs register-task-definition --cli-input-json file://aws/task-defintions/backend-flask.json
+```
+
+
+```sh
+aws ecs register-task-definition --cli-input-json file://aws/task-defintions/frontend-react-js.json
 ```
 
 ### Create Security Group
@@ -645,6 +671,10 @@ aws ec2 authorize-security-group-ingress \
 
 ```sh
 aws ecs create-service --cli-input-json file://aws/json/backend-flask-serv.json
+```
+
+```sh
+aws ecs create-service --cli-input-json file://aws/json/frontend-react-js-serv.json
 ```
 
 > Auto Assign is not supported by EC2 launch type for services
