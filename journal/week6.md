@@ -246,6 +246,26 @@ aws iam create-role \
 }"
 ```
 
+```sh
+aws iam create-role \    
+--role-name CruddurServiceExecutionPolicy  \   
+--assume-role-policy-document file://aws/policies/service-assume-role-execution-policy.json
+```
+
+```sh
+aws iam put-role-policy \
+  --policy-name CruddurServiceExecutionPolicy \
+  --role-name CruddurServiceExecutionRole \
+  --policy-document file://aws/policies/service-execution-policy.json
+"
+```
+
+```sh
+aws iam attach-role-policy --policy-arn POLICY_ARN --role-name CruddurServiceExecutionRole
+```
+
+
+
 ```json
 
        {
