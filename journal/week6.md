@@ -581,7 +581,7 @@ Connect to the container
 aws ecs execute-command  \
 --region $AWS_DEFAULT_REGION \
 --cluster cruddur \
---task arn:aws:ecs:ca-central-1:387543059434:task/cruddur/dceb2ebdc11c49caadd64e6521c6b0c7 \
+--task dceb2ebdc11c49caadd64e6521c6b0c7 \
 --container backend-flask \
 --command "/bin/bash" \
 --interactive
