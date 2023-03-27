@@ -39,15 +39,15 @@
         "ms-vscode-remote.remote-containers"
       ]
     },
-    "settings": {
-      "terminal.integrated.profiles.linux": {
-        "bash": {
-          "path": "/usr/bin/bash",
-          "icon": "terminal-bash"
-        }
-      },
-      "terminal.integrated.defaultProfile.linux": "bash"
-    },
+    // "settings": {
+    //   "terminal.integrated.profiles.linux": {
+    //     "bash": {
+    //       "path": "/usr/bin/bash",
+    //       "icon": "terminal-bash"
+    //     }
+    //   },
+    //   "terminal.integrated.defaultProfile.linux": "bash"
+    // },
     "containerEnv": {
       "AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
       "AWS_SECRET_ACCESS_KEY": "${localEnv:AWS_SECRET_ACCESS_KEY}",
@@ -67,7 +67,7 @@
       // "DB_SG_ID": "${localEnv:DB_SG_ID}",
       // "DB_SG_RULE_ID": "${localEnv:DB_SG_RULE_ID}"
     },
-    "remoteUser": "bootcamp",
-    "postAttachCommand": "cd ./frontend-react-js && npm install && cd ../backend-flask && pip install -r requirements.txt"
+    "remoteUser": "root"
+    // "postAttachCommand": "cd ./frontend-react-js && npm install && cd ../backend-flask && pip install -r requirements.txt"
   }
 }
