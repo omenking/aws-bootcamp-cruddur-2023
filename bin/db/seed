@@ -5,8 +5,12 @@ NO_COLOR='\033[0m'
 LABEL="db-seed"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
-seed_path="$(realpath .)/db/seed.sql"
-echo $seed_path
+ABS_PATH=$(readlink -f "$0")
+BIN_PATH=$(dirname $ABS_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
+schema_path="$BACKEND_FLASK_PATH/db/schema.sql"
+echo $schema_path
 
 if [ "$1" = "prod" ]; then
   echo "Running in production mode"
