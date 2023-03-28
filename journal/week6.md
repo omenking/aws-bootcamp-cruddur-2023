@@ -445,12 +445,12 @@ Create a new folder called `aws/task-defintions` and place the following files i
 ### Register Task Defintion
 
 ```sh
-aws ecs register-task-definition --cli-input-json file://aws/task-defintions/backend-flask.json
+aws ecs register-task-definition --cli-input-json file://aws/task-definitions/backend-flask.json
 ```
 
 
 ```sh
-aws ecs register-task-definition --cli-input-json file://aws/task-defintions/frontend-react-js.json
+aws ecs register-task-definition --cli-input-json file://aws/task-definitions/frontend-react-js.json
 ```
 
 ### Create Security Group
