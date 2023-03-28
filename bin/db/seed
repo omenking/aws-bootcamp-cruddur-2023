@@ -6,7 +6,8 @@ LABEL="db-seed"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
 ABS_PATH=$(readlink -f "$0")
-BIN_PATH=$(dirname $ABS_PATH)
+DB_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $DB_PATH)
 PROJECT_PATH=$(dirname $BIN_PATH)
 BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
 schema_path="$BACKEND_FLASK_PATH/db/schema.sql"
