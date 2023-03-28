@@ -1,9 +1,7 @@
 #! /usr/bin/bash
 
 ABS_PATH=$(readlink -f "$0")
-BUILD_PATH=$(dirname $ABS_PATH)
-DOCKER_PATH=$(dirname $BUILD_PATH)
-BIN_PATH=$(dirname $DOCKER_PATH)
+BIN_PATH=$(dirname $ABS_PATH)
 PROJECT_PATH=$(dirname $BIN_PATH)
 BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
 
