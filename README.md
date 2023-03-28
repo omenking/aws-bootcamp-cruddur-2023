@@ -1,5 +1,11 @@
 # FREE AWS Cloud Project Bootcamp
-
+  "loadBalancers": [
+    {
+        "targetGroupArn": "arn:aws:elasticloadbalancing:ca-central-1:387543059434:targetgroup/cruddur-frontend-react-js/562db3dc9c310eee",
+        "containerName": "frontend-react-js",
+        "containerPort": 3000
+    }
+  ],
 - Application: Cruddur
 - Cohort: 2023-A1
 
