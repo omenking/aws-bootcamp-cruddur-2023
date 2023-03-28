@@ -588,7 +588,8 @@ aws ecs execute-command  \
 ```
 
  ```sh
- docker run -rm \
+docker run -rm \
+-p 4567:4567 \
 -e AWS_ENDPOINT_URL="http://dynamodb-local:8000" \
 -e CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur" \
 -e FRONTEND_URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" \
@@ -603,6 +604,6 @@ aws ecs execute-command  \
 -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
 -e ROLLBAR_ACCESS_TOKEN="${ROLLBAR_ACCESS_TOKEN}" \
 -e AWS_COGNITO_USER_POOL_ID="${AWS_COGNITO_USER_POOL_ID}" \
--e AWS_COGNITO_USER_POOL_CLIENT_ID="5b6ro31g97urk767adrbrdj1g5"    
+-e AWS_COGNITO_USER_POOL_CLIENT_ID="5b6ro31g97urk767adrbrdj1g5" \   
 -it backend-flask-prod
  ```
