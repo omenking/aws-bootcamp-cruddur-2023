@@ -1,0 +1,3 @@
+#! /usr/bin/bash
+echo "db-create"
+psql $CONNECTION_URL -c "DROP database crudder;"
