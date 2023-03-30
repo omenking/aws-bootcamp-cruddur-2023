@@ -1,0 +1,15 @@
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-connect"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+if [ "$1" = "prod" ]; then
+    echo "using production url"
+    CON_URL=$PROD_CONNECTION_URL
+else
+    CON_URL=$CONNECTION_URL
+fi
+
+psql $CON_URL
