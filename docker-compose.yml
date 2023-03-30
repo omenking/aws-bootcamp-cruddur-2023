@@ -20,7 +20,7 @@ services:
       HONEYCOMB_TRACES_API: "https://api.honeycomb.io/v1/traces"
       AWS_COGNITO_USER_POOL_ID: "${REACT_APP_AWS_USER_POOLS_ID}"
       AWS_COGNITO_USER_POOL_CLIENT_ID: "${REACT_APP_CLIENT_ID}"
-      CONNECTION_URL: "postgresql://postgres:password@localhost:5432/crudder"
+      CONNECTION_URL: "${CONNECTION_LOCAL_DOCKER_URL}"
         
     build: ./backend-flask
 

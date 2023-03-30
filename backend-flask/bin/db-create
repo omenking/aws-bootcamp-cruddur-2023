@@ -1,3 +1,4 @@
 #! /usr/bin/bash
 echo "db-create"
-psql $CONNECTION_URL -c "DROP database crudder;"
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "create database cruddur"
