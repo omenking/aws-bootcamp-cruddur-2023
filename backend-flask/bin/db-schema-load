@@ -1,7 +1,21 @@
 #! /usr/bin/bash
+<<<<<<< HEAD
+=======
+
+echo "== db-schema-load"
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-schema-load"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+>>>>>>> 8977319 (Fix typo)
 schema_path="$(realpath .)/db/schema.sql"
 
 echo $schema_path
 
 NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+<<<<<<< HEAD
 psql $NO_DB_CONNECTION_URL cruddur < $schema_path
+=======
+psql $NO_DB_CONNECTION_URL cruddur < $schema_path
+>>>>>>> 8977319 (Fix typo)
