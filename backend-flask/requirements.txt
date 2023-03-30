@@ -16,3 +16,7 @@ rollbar
 requests
 # AWS Cognito
 Flask-AWSCognito
+
+# POSTGRESQL
+psycopg[binary]
+psycopg[pool]
