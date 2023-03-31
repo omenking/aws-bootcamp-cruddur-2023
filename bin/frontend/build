@@ -1,7 +1,8 @@
 #! /usr/bin/bash
 
 ABS_PATH=$(readlink -f "$0")
-BIN_PATH=$(dirname $ABS_PATH)
+FRONTEND_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $FRONTEND_PATH)
 PROJECT_PATH=$(dirname $BIN_PATH)
 FRONTEND_REACT_JS_PATH="$PROJECT_PATH/frontend-react-js"
 
