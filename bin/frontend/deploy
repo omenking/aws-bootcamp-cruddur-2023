@@ -9,6 +9,9 @@ LATEST_TASK_DEFINITION_ARN=$(aws ecs describe-task-definition \
 --query 'taskDefinition.taskDefinitionArn' \
 --output text)
 
+echo "TASK DEF ARN:"
+echo $LATEST_TASK_DEFINITION_ARN
+
 aws ecs update-service \
 --cluster $CLUSTER_NAME \
 --service $SERVICE_NAME \

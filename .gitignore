@@ -1,2 +1,3 @@
 docker/**/*
 frontend-react-js/build/*
+*.env
