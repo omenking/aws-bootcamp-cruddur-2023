@@ -13,6 +13,11 @@
       "name": "xray",
       "image": "public.ecr.aws/xray/aws-xray-daemon" ,
       "essential": true,
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "netstat -aun | grep 2000 > /dev/null; if [ 0 != $? ]; then exit 1; fi;"
+        ],
       "user": "1337",
       "portMappings": [
         {
@@ -32,7 +37,7 @@
           "python /backend-flask/bin/health-check"
         ],
         "interval": 30,
-        "timeout": 15,
+        "timeout": 5,
         "retries": 3,
         "startPeriod": 60
       },
