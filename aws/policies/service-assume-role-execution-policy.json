@@ -1,0 +1,13 @@
+{
+  "Version":"2012-10-17",
+  "Statement":[{
+    "Action":["sts:AssumeRole"],
+    "Effect":"Allow",
+    "Principal":{
+      "Service":["ecs-tasks.amazonaws.com"]
+    }
+  }
+  ]
+}
+
+aws iam put-role-policy  --policy-name CruddurServiceExecutionPolicy  --role-name CruddurServiceExecutionRole  --policy-document file://aws/policies/service-execution-policy.json
