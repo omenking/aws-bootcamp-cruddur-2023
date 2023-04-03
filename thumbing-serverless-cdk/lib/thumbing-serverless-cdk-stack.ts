@@ -2,9 +2,8 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as sns from 'aws-cdk-lib/aws-sns';
-
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as process from 'process';
 import * as path from 'path';
@@ -13,23 +12,26 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    const bucketName: string = process.env.THUMBING_BUCKET_NAME as string;
-    const folderInput: string = process.env.S3_FOLDER_INPUT as string;
-    const folderOutput: string = process.env.S3_FOLDER_OUTPUT as string;
-    const webhookUrl: string = process.env.WEBHOOK_URL as string;
-    const topicName: string = process.env.TOPIC_NAME as string;
+    const bucketName: string = process.env.THUMBING_BUCKET_NAME || 'cruddur-assets';
+    const folderInput: string = process.env.S3_FOLDER_INPUT || 'avatars/raw/'
+    const folderOutput: string = process.env.S3_FOLDER_OUTPUT || 'avatars/processed/'
+    const webhookUrl: string = process.env.WEBHOOK_URL || 'https://api.cruddur.com/webhook/avatar/processed'
+    const topicName: string = process.env.TOPIC_NAME || 'cruddur-avatar'
     const functionPath: string = path.join(__dirname, '..', '..', '..', 'aws', 'lambdas','process-images')
 
     const bucket = this.createBucket(bucketName)
     const lambda = this.createLambda(functionPath,bucketName)
 
-    // This could be redundent, could be creating bucket policy?
+    // This could be redundent since we have s3ReadWritePolicy?
     bucket.grantRead(lambda);
     bucket.grantPut(lambda);
 
     const snsTopic = this.createSnsTopic(topicName)
-    const snsSubscription = this.createSnsSubscription(snsTopic,webhookUrl)
-    const lambdaNotification = this.createS3NotifyToLambda(lambda,snsTopic,bucket)
+    this.createSnsSubscription(snsTopic,webhookUrl)
+
+    // S3 Event Notifications
+    this.createS3NotifyToSns(folderOutput,snsTopic,bucket)
+    this.createS3NotifyToLambda(folderInput,lambda,bucket)
 
     const s3ReadWritePolicy = this.createPolicyBucketAccess(bucket.bucketArn)
     const snsPublishPolicy = this.createPolicySnSPublish(snsTopic.topicArn)
@@ -61,18 +63,21 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     return lambdaFunction;
   }
 
-  createS3NotifyToLambda(folderInput: string, lambda: lambda.IFunction, bucket: s3.IBucket): s3n.ILambdaDestination {
-    const lambdaNotification = new s3n.LambdaDestination(lambda);
-    bucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.NotificationKeyFilter({
-      prefix: folderInput,
-    }), lambdaNotification);
-    return lambdaNotification;
+  createS3NotifyToLambda(prefix: string, lambda: lambda.IFunction, bucket: s3.IBucket): void {
+    const destination = new s3n.LambdaDestination(lambda);
+      bucket.addEventNotification(s3.EventType.OBJECT_CREATED_PUT,
+      destination,
+      {prefix: prefix}
+    )
   }
 
-  createS3NotifyToSns(folderOutput: string, snsTopic: sns.ITopic, bucket: s3.IBucket): s3n.ILambdaDestination {
-    bucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.NotificationKeyFilter({
-      prefix: folderOutput,
-    }), new s3n.SnsDestination(snsTopic));
+  createS3NotifyToSns(prefix: string, snsTopic: sns.ITopic, bucket: s3.IBucket): void {
+    const destination = new s3n.SnsDestination(snsTopic)
+    bucket.addEventNotification(
+      s3.EventType.OBJECT_CREATED_PUT, 
+      destination,
+      {prefix: prefix}
+    );
   }
 
   createSnsTopic(topicName: string): sns.ITopic{
