@@ -1,35 +1,65 @@
-const sharp = require('sharp');
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
-const process = require('process');
+import {sharp} from 'sharp';
+import * as process from 'process';
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import * as fs from "fs";
 
-const bucket_name = process.env.DEST_BUCKET_NAME
+const bucketName = process.env.DEST_BUCKET_NAME
+const folderInput = process.env.FOLDER_INPUT
+const folderOutput = process.env.FOLDER_OUTPUT
+
+const client = new S3Client();
 
 exports.handler = async (event) => {
+  console.log('event',event)
+
   const srcBucket = event.Records[0].s3.bucket.name;
   const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
-  const dstBucket = bucket_name;
-  const dstKey = `${srcKey.split('.').slice(0, -1).join('.')}-thumbnail.png`;
+  console.log('srcBucket',srcBucket)
+  console.log('srcKey',srcKey)
 
-  // Retrieve the image from S3
+  const dstBucket = bucketName;
+  const dstKey = srcKey.replace(folderInput,folderOutput)
+  console.log('dstBucket',dstBucket)
+  console.log('dstKey',dstKey)
+
+  const originalImage = await getOriginalImage(client,srcBucket,srcKey)
+  const processedImage = await processImage()
+  await uploadProcessedImage()
+};
+
+async function getOriginalImage(client,srcBucket,srcKey){
+  console.log('get==')
   const params = {
     Bucket: srcBucket,
     Key: srcKey
   };
-  const image = await s3.getObject(params).promise();
+  console.log('params',params)
+  const command = new GetObjectCommand(params);
+  const response = await client.send(command);
+  const originalImage = fs.createWriteStream("/tmp/png");
+  console.log('repsonse',response);
+  response.Body.pipe(originalImage)
+  return originalImage;
+}
 
-  // Create a thumbnail of the image
-  const thumbnail = await sharp(image.Body)
+async function processImage(image){
+  const processedImage = await sharp(image.Body)
     .resize(512, 512)
     .png()
     .toBuffer();
+  return processedImage;
+}
 
-  // Upload the thumbnail to S3
-  const uploadParams = {
+async function uploadProcessedImage(){
+  console.log('upload==')
+  const params = {
     Bucket: dstBucket,
     Key: dstKey,
     Body: thumbnail,
     ContentType: 'image/png'
   };
-  await s3.putObject(uploadParams).promise();
-};
+  console.log('params',params)
+  const command = new PutObjectCommand(paramsPut);
+  const response = await client.send(command);
+  console.log('repsonse',response);
+}

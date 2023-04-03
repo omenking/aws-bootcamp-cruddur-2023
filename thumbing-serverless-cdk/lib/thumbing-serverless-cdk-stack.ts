@@ -18,7 +18,7 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     const folderOutput: string = process.env.S3_FOLDER_OUTPUT || 'avatars/processed/'
     const webhookUrl: string = process.env.WEBHOOK_URL || 'https://api.cruddur.com/webhook/avatar/processed'
     const topicName: string = process.env.TOPIC_NAME || 'cruddur-avatar'
-    const functionPath: string = path.join(__dirname, '..', '..', '..', 'aws', 'lambdas','process-images')
+    const functionPath: string = path.join(__dirname, '..', '..', 'aws', 'lambdas','process-images')
 
     const bucket = this.createBucket(bucketName)
     const lambda = this.createLambda(functionPath,bucketName)
