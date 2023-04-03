@@ -38,13 +38,6 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     lambda.addToRolePolicy(snsPublishPolicy);
   }
 
-  /*
-  Create a bucket that will contain images we need to process.
-  We'll have the following S3 bucket structure:
-  - avatars
-    - original
-    - thumb
-  */
   createBucket(bucketName: string): s3.IBucket {
     const logicalName: string = 'ThumbingBucket';
     const bucket = new s3.Bucket(this, logicalName , {
