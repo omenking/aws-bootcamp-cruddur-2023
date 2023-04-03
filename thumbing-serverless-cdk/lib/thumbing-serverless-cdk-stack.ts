@@ -3,6 +3,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as sns from 'aws-cdk-lib/aws-sns';
+import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as process from 'process';
@@ -88,13 +89,10 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     return snsTopic;
   }
 
-  createSnsSubscription(snsTopic: sns.ITopic, webhookUrl: string): sns.ISubscription {
-    const logicalName = 'MySubscription';
-    const snsSubscription = new sns.Subscription(this, logicalName, {
-      topic: snsTopic,
-      protocol: sns.SubscriptionProtocol.HTTP,
-      endpoint: webhookUrl
-    });
+  createSnsSubscription(snsTopic: sns.ITopic, webhookUrl: string): sns.Subscription {
+    const snsSubscription = snsTopic.addSubscription(
+      new subscriptions.UrlSubscription(webhookUrl)
+    )
     return snsSubscription;
   }
 
