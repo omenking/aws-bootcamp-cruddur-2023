@@ -10,6 +10,7 @@ async function main(){
   const height = 256
 
   const originalImage = await getOriginalImage(client,srcBucket,srcKey)
+  console.log(originalImage)
   const processedImage = await processImage(originalImage,width,height)
   await uploadProcessedImage(dstBucket,dstKey,processedImage)
 }

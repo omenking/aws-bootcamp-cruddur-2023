@@ -16,14 +16,17 @@ async function getOriginalImage(client,srcBucket,srcKey){
   console.log('params',params)
   const command = new GetObjectCommand(params);
   const response = await client.send(command);
-  const originalImage = fs.createWriteStream("/tmp/png");
-  console.log('repsonse',response);
-  response.Body.pipe(originalImage)
-  return originalImage;
+
+  const chunks = [];
+  for await (const chunk of response.Body) {
+    chunks.push(chunk);
+  }
+  const buffer = Buffer.concat(chunks);
+  return buffer;
 }
 
 async function processImage(image,width,height){
-  const processedImage = await sharp(image.Body)
+  const processedImage = await sharp(image)
     .resize(width, height)
     .png()
     .toBuffer();
