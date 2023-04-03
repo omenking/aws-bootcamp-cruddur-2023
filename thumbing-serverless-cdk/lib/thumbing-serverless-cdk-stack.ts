@@ -7,6 +7,7 @@ import * as sns from 'aws-cdk-lib/aws-sns';
 
 import { Construct } from 'constructs';
 import * as process from 'process';
+import * as path from 'path';
 
 export class ThumbingServerlessCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
