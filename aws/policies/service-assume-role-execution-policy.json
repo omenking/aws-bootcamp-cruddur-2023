@@ -9,5 +9,3 @@
   }
   ]
 }
-
-aws iam put-role-policy  --policy-name CruddurServiceExecutionPolicy  --role-name CruddurServiceExecutionRole  --policy-document file://aws/policies/service-execution-policy.json
