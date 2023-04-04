@@ -23,6 +23,7 @@
     "aws-cdk-lib": "2.72.1",
     "build": "^0.1.4",
     "constructs": "^10.0.0",
+    "envdot": "^0.0.3",
     "source-map-support": "^0.5.21"
   }
 }

@@ -7,18 +7,26 @@ import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as process from 'process';
-import * as path from 'path';
+
+import * as dotenv from 'dotenv';
+dotenv.config()
 
 export class ThumbingServerlessCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    const bucketName: string = process.env.THUMBING_BUCKET_NAME || 'cruddur-assets';
-    const folderInput: string = process.env.S3_FOLDER_INPUT || 'avatars/raw/'
-    const folderOutput: string = process.env.S3_FOLDER_OUTPUT || 'avatars/processed/'
-    const webhookUrl: string = process.env.WEBHOOK_URL || 'https://api.cruddur.com/webhook/avatar/processed'
-    const topicName: string = process.env.TOPIC_NAME || 'cruddur-avatar'
-    const functionPath: string = path.join(__dirname, '..', '..', 'aws', 'lambdas','process-images')
+    const bucketName: string = process.env.THUMBING_BUCKET_NAME as string;
+    const folderInput: string = process.env.S3_FOLDER_INPUT as string;
+    const folderOutput: string = process.env.S3_FOLDER_OUTPUT as string;
+    const webhookUrl: string = process.env.WEBHOOK_URL as string;
+    const topicName: string = process.env.TOPIC_NAME as string;
+    const functionPath: string = process.env.FUNCTION_PATH as string;
+    console.log('bucketName',bucketName)
+    console.log('folderInput',folderInput)
+    console.log('folderOutput',folderOutput)
+    console.log('webhookUrl',webhookUrl)
+    console.log('topicName',topicName)
+    console.log('functionPath',functionPath)
 
     const bucket = this.createBucket(bucketName)
     const lambda = this.createLambda(functionPath,bucketName)
