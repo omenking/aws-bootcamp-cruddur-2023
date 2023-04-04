@@ -30,7 +30,7 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     console.log('functionPath',functionPath)
 
     const bucket = this.createBucket(bucketName)
-    const lambda = this.createLambda(functionPath,bucketName)
+    const lambda = this.createLambda(folderInput,folderOutput,functionPath,bucketName)
 
     // This could be redundent since we have s3ReadWritePolicy?
     bucket.grantRead(lambda);
@@ -59,7 +59,7 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     return bucket;
   }
 
-  createLambda(functionPath: string, bucketName: string): lambda.IFunction {
+  createLambda(folderIntput: string, folderOutput: string, functionPath: string, bucketName: string): lambda.IFunction {
     const logicalName = 'ThumbLambda';
     const code = lambda.Code.fromAsset(functionPath)
     const lambdaFunction = new lambda.Function(this, logicalName, {
@@ -67,7 +67,11 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
       handler: 'index.handler',
       code: code,
       environment: {
-        BUCKET_NAME: bucketName,
+        DEST_BUCKET_NAME: bucketName,
+        FOLDER_INPUT: folderIntput,
+        FOLDER_OUTPUT: folderOutput,
+        PROCESS_WIDTH: '512',
+        PROCESS_HEIGHT: '512'
       }
     });
     return lambdaFunction;

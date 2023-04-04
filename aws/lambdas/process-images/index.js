@@ -4,8 +4,8 @@ const {getClient, getOriginalImage, processImage, uploadProcessedImage} = requir
 const bucketName = process.env.DEST_BUCKET_NAME
 const folderInput = process.env.FOLDER_INPUT
 const folderOutput = process.env.FOLDER_OUTPUT
-const width = process.env.PROCESS_WIDTH
-const height = process.env.PROCESS_HEIGHT
+const width = parseInt(process.env.PROCESS_WIDTH)
+const height = parseInt(process.env.PROCESS_HEIGHT)
 
 client = getClient();
 
