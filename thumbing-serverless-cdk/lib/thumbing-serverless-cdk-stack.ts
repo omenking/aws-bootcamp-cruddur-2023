@@ -8,19 +8,20 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as process from 'process';
 
-import * as dotenv from 'dotenv';
-dotenv.config()
+//import will not work for dotenv you have to use require.
+const dotenv = require('dotenv');
+dotenv.config();
 
 export class ThumbingServerlessCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
     const bucketName: string = process.env.THUMBING_BUCKET_NAME as string;
-    const folderInput: string = process.env.S3_FOLDER_INPUT as string;
-    const folderOutput: string = process.env.S3_FOLDER_OUTPUT as string;
-    const webhookUrl: string = process.env.WEBHOOK_URL as string;
-    const topicName: string = process.env.TOPIC_NAME as string;
-    const functionPath: string = process.env.FUNCTION_PATH as string;
+    const folderInput: string = process.env.THUMBING_S3_FOLDER_INPUT as string;
+    const folderOutput: string = process.env.THUMBING_S3_FOLDER_OUTPUT as string;
+    const webhookUrl: string = process.env.THUMBING_WEBHOOK_URL as string;
+    const topicName: string = process.env.THUMBING_TOPIC_NAME as string;
+    const functionPath: string = process.env.THUMBING_FUNCTION_PATH as string;
     console.log('bucketName',bucketName)
     console.log('folderInput',folderInput)
     console.log('folderOutput',folderOutput)
