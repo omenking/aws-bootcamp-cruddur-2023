@@ -30,9 +30,9 @@ export function time_ago(value){
   const datetime = DateTime.fromISO(value, { zone: 'utc' })
   const future = datetime.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const now     = DateTime.now()
-  const diff_mins = future.diff(now, 'minutes').toObject().minutes;
-  const diff_hours = future.diff(now, 'hours').toObject().hours;
-  const diff_days = future.diff(now, 'days').toObject().days;
+  const diff_mins = now.diff(future, 'minutes').toObject().minutes;
+  const diff_hours = now.diff(future, 'hours').toObject().hours;
+  const diff_days = now.diff(future, 'days').toObject().days;
 
   if (diff_hours > 24.0){
     return `${Math.floor(diff_days)}d`;
