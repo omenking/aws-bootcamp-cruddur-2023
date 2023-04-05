@@ -61,3 +61,10 @@ conn.execute("select '2048-07-08 12:00'::timestamptz").fetchone()[0]
 We don't plan to use timestamptz based on postgres recommendation and we are not so we probably don't have to worry about checking the timezone for hte connection. The underlying connection might matter.
 
 https://docs.python.org/3/library/datetime.html
+
+## Browser
+
+How to find the timezone in chrome inspector:
+```js
+Intl.DateTimeFormat().resolvedOptions().timeZone
+```
