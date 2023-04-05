@@ -5,7 +5,7 @@ from lib.db import pool, query_wrap_object, query_wrap_array
 tracer = trace.get_tracer("home.activities")
 
 class HomeActivities:
-  def run(cognito_user_id=None):
+  def run(logger=None, cognito_user_id=None):
     #logger.info("HomeActivities")
     with tracer.start_as_current_span("home-activites-mock-data"):
       span = trace.get_current_span()
