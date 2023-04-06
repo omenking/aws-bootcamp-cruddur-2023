@@ -8,7 +8,4 @@ parent_path = os.path.abspath(os.path.join(current_path, '..', '..'))
 sys.path.append(parent_path)
 from lib.momento import MomentoCounter
 
-# Call the incr function in the MomentoCounter class
-# You pass in the name of the cache, the name of the item, and the
-# optional value of how much to increment by.
-MomentoCounter.incr(os.getenv('MOMENTO_CACHE_NAME'), "Hello")
+print("Printing value: " + MomentoCounter.get(os.getenv('MOMENTO_CACHE_NAME'), "Hello"))
