@@ -95,7 +95,23 @@ cdk deploy
 cdk ls
 ```
 
+## Create Bucket
+
+## Create SNS Topic
+
+## Create an SNS Subscription
+
+## Create S3 Event Notification to SNS
+
+## Create S3 Event Notification to Lambda
+
 ## Add Destination Triggers
+
+## Create Policy for Bucket Access
+
+## Create Policy for SNS Publishing
+
+## Attach the Policies to the Lambda Role
 
 ```ts
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
