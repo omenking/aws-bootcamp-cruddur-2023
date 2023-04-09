@@ -21,7 +21,7 @@ We'll add the the install to our gitpod task file
 ```sh
   - name: cdk
     before: |
-      npm install aws-cdk-lib -g
+      npm install aws-cdk -g
 ```
 
 
