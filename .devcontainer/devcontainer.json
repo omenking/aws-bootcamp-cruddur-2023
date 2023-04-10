@@ -1,30 +1,16 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/alpine
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"name": "Alpine",
+	"name": "Python 3",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:alpine-3.17",
+	"image": "mcr.microsoft.com/devcontainers/python:0-3.11",
 	"features": {
-		"ghcr.io/devcontainers/features/aws-cli:1": {
-			"version": "latest"
-		}
+		"ghcr.io/devcontainers/features/aws-cli:1": {}
 	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"amazonwebservices.aws-toolkit-vscode",
-				"ms-azuretools.vscode-docker",
-				"GitHub.copilot",
-				"cweijan.vscode-postgresql-client2",
-				"ms-python.vscode-pylance",
-				"donjayamanne.githistory",
-				"GitHub.vscode-pull-request-github",
-				"DanielSanMedium.dscodegpt",
-
-				"ms-python.python",
-				"vscodevim.vim"
-                
-
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	}
@@ -36,7 +22,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
+	// "postCreateCommand": "pip3 install --user -r requirements.txt",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
