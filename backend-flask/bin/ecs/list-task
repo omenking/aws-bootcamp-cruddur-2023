@@ -1,2 +1,0 @@
-#! /usr/bin/bash
-aws ecs list-tasks --cluster cruddur

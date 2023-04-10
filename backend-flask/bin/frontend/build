@@ -1,5 +1,10 @@
 #! /usr/bin/bash
 
+ABS_PATH=$(readlink -f "$0")
+BIN_PATH=$(dirname $DOCKER_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+FRONTEND_REACT_JS_PATH="$PROJECT_PATH/frontend-react-js"
+
 docker build \
 --build-arg REACT_APP_BACKEND_URL="https://api.cruddur.marcusukmwong.com/" \
 --build-arg REACT_APP_AWS_PROJECT_REGION="us-east-1" \
@@ -7,5 +12,6 @@ docker build \
 --build-arg REACT_APP_AWS_USER_POOLS_ID="us-east-1_EpNii0aa1" \
 --build-arg REACT_APP_CLIENT_ID="t35h1vngn6f3a7lp29ollhao" \
 -t frontend-react-js \
--f Dockerfile.prod \
+-f "$FRONTEND_REACT_JS_PATH/Dockerfile.prod" \
+
 .
