@@ -2,6 +2,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 DROP TABLE IF EXISTS public.users;
 DROP TABLE IF EXISTS public.activities;
 
+CREATE TABLE IF NOT EXISTS public.schema_information (
+  last_successful_run text,
+  last_migration_file text
+);
 
 CREATE TABLE public.users (
   uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
