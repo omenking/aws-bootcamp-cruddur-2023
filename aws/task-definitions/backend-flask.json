@@ -44,8 +44,8 @@
           {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"},
           {"name": "AWS_COGNITO_USER_POOL_ID", "value": "us-east-1_EpNii0aa1"},
           {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "value": "t35h1vngn6f3a7lp29ollhao"},
-          {"name": "FRONTEND_URL", "value": "*"},
-          {"name": "BACKEND_URL", "value": "*"},
+          {"name": "FRONTEND_URL", "value": "https://cruddur.marcusukmwong.com"},
+          {"name": "BACKEND_URL", "value": "https://api.cruddur.marcusukmwong.com"},
           {"name": "AWS_DEFAULT_REGION", "value": "us-east-1"}
         ],
         "secrets": [

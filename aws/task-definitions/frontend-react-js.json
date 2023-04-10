@@ -13,6 +13,16 @@
         "name": "frontend-react-js",
         "image": "949461172049.dkr.ecr.us-east-1.amazonaws.com/frontend-react-js",
         "essential": true,
+        "healthCheck": {
+          "command": [
+            "CMD-SHELL",
+            "curl -sSf http://localhost:3000 || exit 1"
+          ],
+          "interval": 30,
+          "timeout": 5,
+          "startPeriod": 60,
+          "retries": 3
+        },
         "portMappings": [
           {
             "name": "frontend-react-js",
@@ -26,7 +36,7 @@
           "logDriver": "awslogs",
           "options": {
               "awslogs-group": "cruddur",
-              "awslogs-region": "ca-central-1",
+              "awslogs-region": "us-east-1",
               "awslogs-stream-prefix": "frontend-react-js"
           }
         }
