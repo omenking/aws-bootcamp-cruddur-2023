@@ -22,6 +22,7 @@ export default function ProfileForm(props) {
       const res = await fetch(backend_url, {
         method: "POST",
         headers: {
+          'Origin': "https://3000-omenking-awsbootcampcru-ts9rmefvwj6.ws-us94.gitpod.io",
           'Authorization': `Bearer ${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -29,6 +30,7 @@ export default function ProfileForm(props) {
       let data = await res.json();
       if (res.status === 200) {
         console.log('presigned url',data)
+        return data.url
       } else {
         console.log(res)
       }
@@ -45,11 +47,11 @@ export default function ProfileForm(props) {
     const type = file.type
     const preview_image_url = URL.createObjectURL(file)
     console.log(filename,size,type)
-
+    const presignedurl = await s3uploadkey()
+    console.log('pp',presignedurl)
     try {
       console.log('s3upload')
-      const backend_url = ""
-      const res = await fetch(backend_url, {
+      const res = await fetch(presignedurl, {
         method: "PUT",
         body: file,
         headers: {
@@ -57,7 +59,7 @@ export default function ProfileForm(props) {
       }})
       let data = await res.json();
       if (res.status === 200) {
-        console.log('presigned url',data)
+        setPresignedurl(data.url)
       } else {
         console.log(res)
       }
@@ -126,9 +128,6 @@ export default function ProfileForm(props) {
           </div>
           <div className="popup_content">
             
-            <div className="upload" onClick={s3uploadkey}>
-              Upload Avatar
-            </div>
           <input type="file" name="avatarupload" onChange={s3upload} />
 
             <div className="field display_name">
