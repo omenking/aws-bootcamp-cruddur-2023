@@ -35,6 +35,7 @@ export default function UserFeedPage() {
       });
       let resJson = await res.json();
       if (res.status === 200) {
+        console.log('setprofile',resJson.profile)
         setProfile(resJson.profile)
         setActivities(resJson.activities)
       } else {
