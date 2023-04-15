@@ -1,0 +1,46 @@
+# Buildspec runs in the build stage of your pipeline.
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+    commands:
+      - echo "cd into $CODEBUILD_SRC_DIR/backend"
+      - cd $CODEBUILD_SRC_DIR/backend-flask
+      - "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_URL"
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t backend-flask .
+      - "docker tag $REPO_NAME $IMAGE_URL/$REPO_NAME"
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image..
+      - "docker push $IMAGE_URL/$REPO_NAME"
+      - echo "imagedefinitions.json > [{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
+      - printf "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
+
+env:
+  variables:
+    AWS_ACCOUNT_ID: 387543059434
+    CONTAINER_NAME: backend-flask
+    IMAGE_URL: 387543059434.dkr.ecr.ca-central-1.amazonaws.com
+    REPO_NAME: backend-flask:latest
+    AWS_COGNITO_USER_POOL_CLIENT_ID: 5b6ro31g97urk767adrbrdj1g5
+    AWS_COGNITO_USER_POOL_ID: ca-central-1_CQ4wDfnwc
+    AWS_DEFAULT_REGION: ca-central-1
+    BACKEND_URL: "*"
+    FRONTEND_URL: "*"
+    OTEL_EXPORTER_OTLP_ENDPOINT: https://api.honeycomb.io
+    OTEL_SERVICE_NAME: backend-flask 
+  parameter-store:
+    AWS_ACCESS_KEY_ID: /cruddur/backend-flask/AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: /cruddur/backend-flask/AWS_SECRET_ACCESS_KEY
+    CONNECTION_URL: /cruddur/backend-flask/CONNECTION_URL
+    OTEL_EXPORTER_OTLP_HEADERS: /cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS 
+    ROLLBAR_ACCESS_TOKEN: /cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN
+artifacts:
+  files:
+    - imagedefinitions.json
