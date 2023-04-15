@@ -31,14 +31,11 @@ env:
     REPO_NAME: backend-flask:latest
     AWS_COGNITO_USER_POOL_CLIENT_ID: 5b6ro31g97urk767adrbrdj1g5
     AWS_COGNITO_USER_POOL_ID: ca-central-1_CQ4wDfnwc
-    AWS_DEFAULT_REGION: ca-central-1
     BACKEND_URL: "*"
     FRONTEND_URL: "*"
     OTEL_EXPORTER_OTLP_ENDPOINT: https://api.honeycomb.io
     OTEL_SERVICE_NAME: backend-flask 
   parameter-store:
-    AWS_ACCESS_KEY_ID: /cruddur/backend-flask/AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY: /cruddur/backend-flask/AWS_SECRET_ACCESS_KEY
     CONNECTION_URL: /cruddur/backend-flask/CONNECTION_URL
     OTEL_EXPORTER_OTLP_HEADERS: /cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS 
     ROLLBAR_ACCESS_TOKEN: /cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN
