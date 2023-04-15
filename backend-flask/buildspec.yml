@@ -7,7 +7,7 @@ phases:
     commands:
       - echo "cd into $CODEBUILD_SRC_DIR/backend"
       - cd $CODEBUILD_SRC_DIR/backend-flask
-      - "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_URL"
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_URL
   build:
     commands:
       - echo Build started on `date`
@@ -18,7 +18,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image..
-      - "docker push $IMAGE_URL/$REPO_NAME"
+      - docker push $IMAGE_URL/$REPO_NAME
       - echo "imagedefinitions.json > [{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
       - printf "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
 
