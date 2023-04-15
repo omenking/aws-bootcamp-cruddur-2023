@@ -19,6 +19,7 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image..
       - docker push $IMAGE_URL/$REPO_NAME
+      - cd $CODEBUILD_SRC_DIR/backend-flask
       - echo "imagedefinitions.json > [{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
       - printf "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
 
