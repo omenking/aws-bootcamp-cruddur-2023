@@ -12,7 +12,7 @@ services:
   frontend-react-js:
     env_file:
       - frontend-react-js.env
-    build: ./frontend-react-jst35h1vngn6f3a7lp29ollhao
+    build: ./frontend-react-js
     ports:
       - "3000:3000"
     healthcheck:
