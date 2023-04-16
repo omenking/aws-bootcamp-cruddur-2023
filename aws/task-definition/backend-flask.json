@@ -1,12 +1,12 @@
 {
     "family": "backend-flask",
-    "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/CruddurServiceExecutionRole",
-    "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/CruddurTaskRole",
+    "executionRoleArn": "arn:aws:iam::971893610457:role/CruddurServiceExecutionRole",
+    "taskRoleArn": "arn:aws:iam::971893610457:role/CruddurTaskRole",
     "networkMode": "awsvpc",
     "containerDefinitions": [
       {
         "name": "backend-flask",
-        "image": "BACKEND_FLASK_IMAGE_URL",
+        "image": "971893610457.dkr.ecr.us-east-1.amazonaws.com/backend-flask",
         "cpu": 256,
         "memory": 512,
         "essential": true,
