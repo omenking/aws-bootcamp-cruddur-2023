@@ -4,8 +4,8 @@
       "Effect": "Allow",
       "Action": [
         "ssm:GetParameters",
-        "ssm:GetParameter"   ###HelpsLaunchTasks
+        "ssm:GetParameter"  
       ],
-      "Resource": "arn:aws:ssm:ca-central-1:387543059434:parameter/cruddur/backend-flask/*"
+      "Resource": "arn:aws:ssm:us-east-1:971893610457:parameter/cruddur/backend-flask/*"
     }]
   }
