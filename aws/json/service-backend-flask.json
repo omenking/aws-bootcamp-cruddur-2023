@@ -5,6 +5,8 @@
     "taskDefinition": "backend-flask",
     "enableECSManagedTags": true,
     "enableExecuteCommand": true,
+    "propagateTags": "SERVICE",
+    "serviceName": "backend-flask",
     "networkConfiguration": {
         "awsvpcConfiguration": {
             "assignPublicIp": "ENABLED",
