@@ -190,17 +190,22 @@ Outputs:
     Value: !Join [",", !Ref SubnetCidrBlocks]
     Export:
       Name: !Sub "${AWS::StackName}SubnetCidrBlocks"
-  SubnetIds:
+  PublicSubnetIds:
     Value: !Join 
       - ","
       - - !Ref SubnetPub1
         - !Ref SubnetPub2
         - !Ref SubnetPub3
-        - !Ref SubnetPriv1
+    Export:
+      Name: !Sub "${AWS::StackName}PublicSubnetIds"
+  PrivateSubnetIds:
+    Value: !Join 
+      - ","
+      - - !Ref SubnetPriv1
         - !Ref SubnetPriv2
         - !Ref SubnetPriv3
     Export:
-      Name: !Sub "${AWS::StackName}SubnetIds"
+      Name: !Sub "${AWS::StackName}PrivateSubnetIds"
   AvailabilityZones:
     Value: !Join 
       - ","
