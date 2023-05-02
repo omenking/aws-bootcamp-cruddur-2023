@@ -70,29 +70,29 @@ from flask import got_request_exception
 app = Flask(__name__)
 
 ## auth
-class AccessMiddleware(BaseHTTPMiddleware):
-    def __init__(self):
-        super().__init__()
+# class AccessMiddleware(BaseHTTPMiddleware):
+#     def __init__(self):
+#         super().__init__()
 
-    def dispatch(self, request, call_next):
-        access_token = extract_access_token(request.headers)
+#     def dispatch(self, request, call_next):
+#         access_token = extract_access_token(request.headers)
 
-        try:
-          claims = cognito_jwt_token.verify(access_token)
-          # authenicatied request
-          app.logger.debug("authenicated")
-          app.logger.debug(claims)
-          app.logger.debug(claims['username'])
-        except TokenVerifyError as e:
-          # unauthenicatied request
-          app.logger.debug(e)
-          app.logger.debug("unauthenicated")
+#         try:
+#           claims = cognito_jwt_token.verify(access_token)
+#           # authenicatied request
+#           app.logger.debug("authenicated")
+#           app.logger.debug(claims)
+#           app.logger.debug(claims['username'])
+#         except TokenVerifyError as e:
+#           # unauthenicatied request
+#           app.logger.debug(e)
+#           app.logger.debug("unauthenicated")
         
-        return call_next(request)
+#         return call_next(request)
      
 
-app.wsgi_app = MiddlewareManager(app)
-app.wsgi_app.add_middleware(AccessMiddleware)
+# app.wsgi_app = MiddlewareManager(app)
+# app.wsgi_app.add_middleware(AccessMiddleware)
 
 
 # X-Ray ----------
