@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  The primary Postgres RDS Database for the application
+  - RDS Instance
+  - Database Security Group
+
+Parameters:
+  BackupRetentionPeriod:
+    Type: Number
+    Default: 0
+  DBInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+
+Resources:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html
+  Type: AWS::RDS::DBInstance
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html
+  DeletionPolicy: 'Snapshot'
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+  UpdateReplacePolicy: 'Snapshot'
+  Properties:
+    AllocatedStorage: '20'
+    AllowMajorVersionUpgrade: true
+    AutoMinorVersionUpgrade: true
+    BackupRetentionPeriod: !Ref  BackupRetentionPeriod
+    DBInstanceClass: !Ref DBInstanceClass
+
+#Outputs:
+#  ServiceSecurityGroupId:
+#    Value: !GetAtt ServiceSG.GroupId
+#    Export:
+#      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
