@@ -47,7 +47,7 @@ Resources:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub "${AWS::StackName}AlbSG"
+      GroupName: !Sub "${AWS::StackName}RDSSG"
       GroupDescription: Public Facing SG for our Cruddur ALB
       VpcId:
         Fn::ImportValue:
