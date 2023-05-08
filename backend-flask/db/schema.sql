@@ -23,3 +23,12 @@ CREATE TABLE public.activities (
   expires_at TIMESTAMP,
   created_at TIMESTAMP default current_timestamp NOT NULL
 );
+
+create table if not exists public.schema_information (
+  id integer UNIQUE,
+  last_successful_run text
+);
+
+INSERT INTO public.schema_information (id, last_successful_run)
+VALUES(1, '0')
+ON CONFLICT (id) DO NOTHING;
