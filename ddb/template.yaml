@@ -13,6 +13,9 @@ Parameters:
   Timeout:
     Type: Number
     Default: 3
+  DeletionProtectionEnabled:
+    Type: String
+    Default: false
 Resources:
   DynamoDBTable:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
@@ -35,7 +38,7 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
       BillingMode: PROVISIONED
-      DeletionProtectionEnabled: true
+      DeletionProtectionEnabled: !Ref DeletionProtectionEnabled
       GlobalSecondaryIndexes:
         - IndexName: message-group-sk-index
           KeySchema:
@@ -54,7 +57,7 @@ Resources:
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: aws/lambdas/cruddur-messaging-stream
+      CodeUri: cruddur-messaging-stream
       PackageType: Zip
       Handler: lambda_handler
       Runtime: !Ref PythonRuntime
@@ -74,7 +77,7 @@ Resources:
   LambdaLogGroup:
     Type: "AWS::Logs::LogGroup"
     Properties:
-      LogGroupName: "/aws/lambda/cruddur-messaging-stream"
+      LogGroupName: "/aws/lambda/cruddur-messaging-stream00"
       RetentionInDays: 14
   LambdaLogStream:
     Type: "AWS::Logs::LogStream"

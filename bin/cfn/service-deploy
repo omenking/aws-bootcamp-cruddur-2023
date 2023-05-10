@@ -15,6 +15,7 @@ STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 aws cloudformation deploy \
   --stack-name $STACK_NAME \
   --s3-bucket $BUCKET \
+  --s3-prefix backend-service \
   --region $REGION \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \
