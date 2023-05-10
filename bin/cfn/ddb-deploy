@@ -20,7 +20,6 @@ sam build \
 --base-dir $FUNC_DIR
 #--parameter-overrides
 
-TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/template.yaml"
 OUTPUT_TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
 
 echo "== package"
@@ -40,4 +39,4 @@ sam deploy \
   --config-file $CONFIG_PATH \
   --stack-name "CrdDdb" \
   --tags group=cruddur-ddb \
-  --capabilities "CAPABILITY_IAM"
+  --capabilities "CAPABILITY_NAMED_IAM"
