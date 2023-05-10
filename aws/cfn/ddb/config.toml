@@ -1,0 +1,9 @@
+version=0.1
+[default.build.parameters]
+region = "ca-central-1"
+
+[default.package.parameters]
+region = "ca-central-1"
+
+[default.deploy.parameters]
+region = "ca-central-1"

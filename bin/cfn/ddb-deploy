@@ -1,23 +1,35 @@
 #! /usr/bin/env bash
 set -e # stop the execution of the script if it fails
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
+FUNC_DIR="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-messaging-stream/"
+TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/config.toml"
-echo $CFN_PATH
+ARTIFACT_BUCKET="cfn-artifacts"
 
-cfn-lint $CFN_PATH
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
+sam build \
+--config-file $CONFIG_PATH \
+--template-file  $TEMPLATE_PATH \
+--base-dir $FUNC_DIR
+#--parameter-overrides
 
-BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
-REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
-STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
-PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/template.yaml"
+OUTPUT_TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
 
-aws cloudformation deploy \
-  --stack-name $STACK_NAME \
-  --s3-bucket $BUCKET \
-  --region $REGION \
-  --template-file "$CFN_PATH" \
-  --no-execute-changeset \
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-package.html
+sam package \
+  --s3-bucket $ARTIFACT_BUCKET \
+  --config-file $CONFIG_PATH \
+  --output-template-file $OUTPUT_TEMPLATE_PATH \
+  --template-file $TEMPLATE_PATH \
+  --s3-prefix "ddb"
+
+PACKAGED_TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
+
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html
+sam deploy \
+  --template-file $PACKAGED_TEMPLATE_PATH  \
+  --config-file $CONFIG_PATH \
+  --stack-name "CrdDdb" \
   --tags group=cruddur-ddb \
-  --parameter-overrides $PARAMETERS \
-  --capabilities CAPABILITY_NAMED_IAM
+  --capabilities "CAPABILITY_IAM"
