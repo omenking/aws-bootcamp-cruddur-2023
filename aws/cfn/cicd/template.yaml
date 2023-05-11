@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  - CodeStar Connection V2 Github
+  - CodePipeline
+  - Codebuild
+Parameters:
+  GitHubBranch:
+    Type: String
+    Default: prod
+  GithubRepo:
+    Type: String
+    Default: 'omenking/aws-bootcamp-cruddur-2023'
+  ClusterStack:
+    Type: String
+  ServiceStack:
+    Type: String
+Resources:
+  CodeBuildBakeImageStack:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: nested/codebuild.yaml
+  CodeStarConnection:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codestarconnections-connection.html
+    Type: AWS::CodeStarConnections::Connection
+    Properties:
+      ProviderType: GitHub
+  Pipeline:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codepipeline-pipeline.html
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: ApplicationSource
+              RunOrder: 1
+              ActionTypeId:
+                Category: Source
+                Provider: CodeStarSourceConnection
+                Owner: AWS
+                Version: '2'
+              OutputArtifacts:
+                - Name: Source
+              Configuration:
+                ConnectionArn: !Ref CodeStarConnection
+                FullRepositoryId: !Ref GithubRepo
+                BranchName: !Ref GitHubBranch
+                OutputArtifactFormat: "CODE_ZIP"
