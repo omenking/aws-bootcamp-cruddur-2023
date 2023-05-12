@@ -12,11 +12,10 @@ Parameters:
     Type: String
   RootBucketName:
     Type: String
-  HostedZoneId:
-    Type: String
 
 Resources:
   RootBucketPolicy:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref RootBucket
@@ -29,7 +28,7 @@ Resources:
             Principal: '*'
   WWWBucket:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
-    Type: 'AWS::S3::Bucket'
+    Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref WwwBucketName
       WebsiteConfiguration:
@@ -37,31 +36,39 @@ Resources:
           HostName: !Ref RootBucketName
   RootBucket:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
-    Type: 'AWS::S3::Bucket'
+    Type: AWS::S3::Bucket
     #DeletionPolicy: Retain
     Properties:
       BucketName: !Ref RootBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: false
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
   RootBucketDomain:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Sub ${RootBucketName}.
       Name: !Sub ${RootBucketName}.
       Type: A
       AliasTarget:
-        DNSName: !GetAtt CloudFrontDistribution.DomainName
-        HostedZoneId: !Ref HostedZoneId
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+        # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
   WwwBucketDomain:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Sub ${RootBucketName}.
       Name: !Sub ${WwwBucketName}.
       Type: A
       AliasTarget:
-        DNSName: !GetAtt CloudFrontDistribution.DomainName
-        HostedZoneId: !Ref HostedZoneId
+        DNSName: !GetAtt Distribution.DomainName
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+        # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+        HostedZoneId: Z2FDTNDATAQYW2
   Distribution:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudfront-distribution.html
     Type: AWS::CloudFront::Distribution
@@ -86,5 +93,5 @@ Resources:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
         ViewerCertificate:
-          AcmCertificateArn: !Ref AcmCertificateArn
+          AcmCertificateArn: !Ref CertificateArn
           SslSupportMethod: sni-only
