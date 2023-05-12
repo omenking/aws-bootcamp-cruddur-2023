@@ -4,3 +4,4 @@ frontend-react-js/build/*
 node_modules
 .aws-sam
 build.toml
+tmp/*
