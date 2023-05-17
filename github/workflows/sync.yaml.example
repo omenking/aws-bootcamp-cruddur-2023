@@ -1,0 +1,48 @@
+name: Sync-Prod-Frontend
+
+on:
+  push:
+    branches: [ prod ]
+  pull_request:
+    branches: [ prod ]
+
+jobs:
+  build:
+    name: Statically Build Files
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: cd frontend-react-js
+      - run: npm ci
+      - run: npm run build
+  deploy:
+    name: Sync Static Build to S3 Bucket
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::387543059434:role/CrdSyncRole-Role-1N0SLA7KGVS8E
+          aws-region: ca-central-1
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: '3.1'
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rake sync

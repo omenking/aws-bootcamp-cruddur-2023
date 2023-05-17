@@ -1,0 +1,35 @@
+#! /usr/bin/env bash
+#set -e # stop the execution of the script if it fails
+
+CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cicd/template.yaml"
+CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cicd/config.toml"
+PACKAGED_PATH="/workspace/aws-bootcamp-cruddur-2023/tmp/packaged-template.yaml"
+PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+echo $CFN_PATH
+
+cfn-lint $CFN_PATH
+
+BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+
+# package
+# -----------------
+echo "== packaging CFN to S3..."
+aws cloudformation package \
+  --template-file $CFN_PATH \
+  --s3-bucket $BUCKET \
+  --s3-prefix cicd-package \
+  --region $REGION \
+  --output-template-file "$PACKAGED_PATH"
+
+aws cloudformation deploy \
+  --stack-name $STACK_NAME \
+  --s3-bucket $BUCKET \
+  --s3-prefix cicd \
+  --region $REGION \
+  --template-file "$PACKAGED_PATH" \
+  --no-execute-changeset \
+  --tags group=cruddur-cicd \
+  --parameter-overrides $PARAMETERS \
+  --capabilities CAPABILITY_NAMED_IAM

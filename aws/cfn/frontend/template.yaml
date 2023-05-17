@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  - CloudFront Distribution
+  - S3 Bucket for www.
+  - S3 Bucket for naked domain
+  - Bucket Policy
+
+Parameters:
+  CertificateArn:
+    Type: String
+  WwwBucketName:
+    Type: String
+  RootBucketName:
+    Type: String
+
+Resources:
+  RootBucketPolicy:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref RootBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${RootBucket}/*'
+            Principal: '*'
+  WWWBucket:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref WwwBucketName
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref RootBucketName
+  RootBucket:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::Bucket
+    #DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref RootBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+  RootBucketDomain:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub ${RootBucketName}.
+      Name: !Sub ${RootBucketName}.
+      Type: A
+      AliasTarget:
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+        # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+  WwwBucketDomain:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub ${RootBucketName}.
+      Name: !Sub ${WwwBucketName}.
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+        # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+        HostedZoneId: Z2FDTNDATAQYW2
+  Distribution:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudfront-distribution.html
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - cruddur.com
+          - www.cruddur.com
+        Comment: Frontend React Js for Cruddur
+        Enabled: true
+        HttpVersion: http2and3 
+        DefaultRootObject: index.html
+        Origins:
+          - DomainName: !GetAtt RootBucket.DomainName
+            Id: RootBucketOrigin
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: RootBucketOrigin
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html

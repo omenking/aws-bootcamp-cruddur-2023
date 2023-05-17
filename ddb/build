@@ -1,0 +1,20 @@
+#! /usr/bin/env bash
+set -e # stop the execution of the script if it fails
+
+FUNC_DIR="/workspace/aws-bootcamp-cruddur-2023/ddb/cruddur-messaging-stream/"
+TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/ddb/template.yaml"
+CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/ddb/config.toml"
+
+sam validate -t $TEMPLATE_PATH
+
+echo "== build"
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
+# --use-container
+# use container is for building the lambda in a container
+# it's still using the runtimes and its not a custom runtime
+sam build \
+--use-container \
+--config-file $CONFIG_PATH \
+--template $TEMPLATE_PATH \
+--base-dir $FUNC_DIR
+#--parameter-overrides

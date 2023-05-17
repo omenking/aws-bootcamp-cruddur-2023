@@ -1,0 +1,8 @@
+[deploy]
+bucket = 'cfn-artifacts'
+region = 'ca-central-1'
+stack_name = 'CrdSrvBackendFlask'
+
+[parameters]
+EnvFrontendUrl = 'https://cruddur.com'
+EnvBackendUrl = 'https://api.cruddur.com'

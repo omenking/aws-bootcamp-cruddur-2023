@@ -2,3 +2,6 @@ docker/**/*
 frontend-react-js/build/*
 *.env
 node_modules
+.aws-sam
+build.toml
+tmp/*

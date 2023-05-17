@@ -3,7 +3,9 @@ services:
   backend-flask:
     env_file:
       - backend-flask.env
-    build: ./backend-flask
+    build:
+      context:  ./backend-flask
+      dockerfile: Dockerfile
     ports:
       - "4567:4567"
     volumes:

@@ -1,0 +1,9 @@
+[deploy]
+bucket = 'cfn-artifacts'
+region = 'ca-central-1'
+stack_name = 'CrdSyncRole'
+
+[parameters]
+GitHubOrg = 'omenking'
+RepositoryName = 'aws-bootcamp-cruddur-2023'
+OIDCProviderArn = ''

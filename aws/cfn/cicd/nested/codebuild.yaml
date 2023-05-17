@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Codebuild used for baking container images
+  - Codebuild Project
+  - Codebuild Project Role
+
+Parameters:
+  LogGroupPath:
+    Type: String
+    Description: "The log group path for CodeBuild"
+    Default: "/cruddur/codebuild/bake-service"
+  LogStreamName:
+    Type: String
+    Description: "The log group path for CodeBuild"
+    Default: "backend-flask"
+  CodeBuildImage:
+    Type: String
+    Default: aws/codebuild/amazonlinux2-x86_64-standard:4.0
+  CodeBuildComputeType:
+    Type: String
+    Default: BUILD_GENERAL1_SMALL
+  CodeBuildTimeoutMins:
+    Type: Number
+    Default: 5
+  BuildSpec:
+    Type: String
+    Default: 'buildspec.yaml'
+Resources:
+  CodeBuild:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html
+    Type: AWS::CodeBuild::Project
+    Properties:
+      QueuedTimeoutInMinutes: !Ref CodeBuildTimeoutMins
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      # PrivilegedMode is needed to build Docker images
+      # even though we have No Artifacts, CodePipeline Demands both to be set as CODEPIPLINE
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: !Ref CodeBuildComputeType
+        Image: !Ref CodeBuildImage
+        Type: LINUX_CONTAINER
+        PrivilegedMode: true
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: !Ref LogGroupPath
+          Status: ENABLED
+          StreamName: !Ref LogStreamName
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: !Ref BuildSpec
+  CodeBuildRole:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [codebuild.amazonaws.com]
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${AWS::StackName}ECRPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - ecr:BatchCheckLayerAvailability
+                - ecr:CompleteLayerUpload
+                - ecr:GetAuthorizationToken
+                - ecr:InitiateLayerUpload
+                - ecr:BatchGetImage
+                - ecr:GetDownloadUrlForLayer
+                - ecr:PutImage
+                - ecr:UploadLayerPart
+                Effect: Allow
+                Resource: "*"
+        - PolicyName: !Sub ${AWS::StackName}VPCPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - ec2:CreateNetworkInterface
+                - ec2:DescribeDhcpOptions
+                - ec2:DescribeNetworkInterfaces
+                - ec2:DeleteNetworkInterface
+                - ec2:DescribeSubnets
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeVpcs
+                Effect: Allow
+                Resource: "*"
+              - Action:
+                - ec2:CreateNetworkInterfacePermission
+                Effect: Allow
+                Resource: "*"
+        - PolicyName: !Sub ${AWS::StackName}Logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Effect: Allow
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupPath}*
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupPath}:*
+Outputs:
+  CodeBuildProjectName:
+    Description: "CodeBuildProjectName"
+    Value: !Sub ${AWS::StackName}Project
