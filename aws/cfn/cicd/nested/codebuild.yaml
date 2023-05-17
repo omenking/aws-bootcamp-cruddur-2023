@@ -110,4 +110,4 @@ Resources:
 Outputs:
   CodeBuildProjectName:
     Description: "CodeBuildProjectName"
-    Value: !Sub ${AWS::StackName}Project
+    Value: !Ref CodeBuild
