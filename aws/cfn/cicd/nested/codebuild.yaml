@@ -25,6 +25,8 @@ Parameters:
   BuildSpec:
     Type: String
     Default: 'buildspec.yaml'
+  ArtifactBucketName:
+    Type: String
 Resources:
   CodeBuild:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html
@@ -62,6 +64,16 @@ Resources:
         Version: '2012-10-17'
       Path: /
       Policies:
+        - PolicyName: !Sub ${AWS::StackName}S3ArtifactAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - s3:*
+                Effect: Allow
+                Resource:
+                  - !Sub arn:aws:s3:::${ArtifactBucketName}
+                  - !Sub arn:aws:s3:::${ArtifactBucketName}/*
         - PolicyName: !Sub ${AWS::StackName}ECRPolicy
           PolicyDocument:
             Version: '2012-10-17'

@@ -16,12 +16,17 @@ Parameters:
     Type: String
   ArtifactBucketName:
     Type: String
+  BuildSpec:
+    Type: String
 Resources:
   Codebuild:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-stack.html
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: nested/codebuild.yaml
+      Parameters:
+        ArtifactBucketName: !Ref ArtifactBucketName
+        BuildSpec: !Ref BuildSpec
   CodeStarConnection:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codestarconnections-connection.html
     Type: AWS::CodeStarConnections::Connection
@@ -104,6 +109,19 @@ Resources:
         Version: '2012-10-17'
       Path: /
       Policies:
+        # When the Application Source downloads the code.
+        # It needs to zip it and place it a bucket, so we need
+        # to suplly an artifacts bucket.
+        - PolicyName: !Sub ${AWS::StackName}S3ArtifactAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - s3:*
+                Effect: Allow
+                Resource:
+                  - !Sub arn:aws:s3:::${ArtifactBucketName}
+                  - !Sub arn:aws:s3:::${ArtifactBucketName}/*
         - PolicyName: !Sub ${AWS::StackName}EcsDeployPolicy
           PolicyDocument:
             Version: '2012-10-17'
@@ -155,6 +173,9 @@ Resources:
                 - codebuild:StartBuild
                 - codebuild:StopBuild
                 - codebuild:RetryBuild
+                # even though we are not Batch for CodeBuild
+                # AWS Still requires permissions
+                - codebuild:BatchGetBuilds
                 Effect: Allow
                 Resource: !Join
                   - ''
