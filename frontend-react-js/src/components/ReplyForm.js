@@ -20,7 +20,7 @@ export default function ReplyForm(props) {
   const onsubmit = async (event) => {
     event.preventDefault();
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/${props.activity.uuid}/reply`
-    payload_data = {
+    const payload_data = {
       activity_uuid: props.activity.uuid,
       message: message
     }
