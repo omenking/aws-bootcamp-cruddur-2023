@@ -2,8 +2,8 @@ import './SigninPage.css';
 import React from "react";
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
+import FormErrors from 'components/FormErrors';
 
-// [TODO] Authenication
 import { Auth } from 'aws-amplify';
 
 export default function SigninPage() {
@@ -13,8 +13,8 @@ export default function SigninPage() {
   const [errors, setErrors] = React.useState('');
 
   const onsubmit = async (event) => {
-    setErrors('')
     event.preventDefault();
+    setErrors('')
     Auth.signIn(email, password)
     .then(user => {
       console.log('user',user)
@@ -35,11 +35,6 @@ export default function SigninPage() {
   }
   const password_onchange = (event) => {
     setPassword(event.target.value);
-  }
-
-  let el_errors;
-  if (errors){
-    el_errors = <div className='errors'>{errors}</div>;
   }
 
   return (
@@ -71,7 +66,7 @@ export default function SigninPage() {
               />
             </div>
           </div>
-          {el_errors}
+          <FormErrors errors={errors} />
           <div className='submit'>
             <Link to="/forgot" className="forgot-link">Forgot Password?</Link>
             <button type='submit'>Sign In</button>
