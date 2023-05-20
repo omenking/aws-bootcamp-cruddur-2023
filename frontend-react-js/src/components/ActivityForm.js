@@ -24,14 +24,18 @@ export default function ActivityForm(props) {
       message: message,
       ttl: ttl
     }
-    post(url,payload_data,setErrors,function(data){
-      // add activity to the feed
-      props.setActivities(current => [data,...current]);
-      // reset and close the form
-      setCount(0)
-      setMessage('')
-      setTtl('7-days')
-      props.setPopped(false)
+    post(url,payload_data,{
+        auth: true,
+        setErrors: setErrors,
+        success: function(data){
+          // add activity to the feed
+          props.setActivities(current => [data,...current]);
+          // reset and close the form
+          setCount(0)
+          setMessage('')
+          setTtl('7-days')
+          props.setPopped(false)
+        }
     })
   }
 

@@ -1,13 +1,16 @@
 SELECT
-  activities.uuid,
-  users.display_name,
-  users.handle,
-  activities.message,
-  activities.replies_count,
-  activities.reposts_count,
-  activities.likes_count,
-  activities.expires_at,
-  activities.created_at,
+  (SELECT COALESCE(row_to_json(object_row),'{}'::json) FROM (
+    SELECT
+      activities.uuid,
+      users.display_name,
+      users.handle,
+      activities.message,
+      activities.replies_count,
+      activities.reposts_count,
+      activities.likes_count,
+      activities.expires_at,
+      activities.created_at
+  ) object_row) as activity,
   (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
   SELECT
     replies.uuid,
