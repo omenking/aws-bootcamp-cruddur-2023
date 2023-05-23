@@ -4,9 +4,13 @@
   overflow: hidden;
   border-bottom: solid 1px rgb(31,36,49);
   padding: 16px;
+}
+
+.message_item .avatar {
   cursor: pointer;
   text-decoration: none;
 }
+
 .message_item:hover {
 background: rgba(255,255,255,0.08)
 }
