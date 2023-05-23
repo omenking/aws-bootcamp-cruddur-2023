@@ -46,6 +46,7 @@ export default function ActivityShowPage() {
   if (activity !== null){
     el_activity = (
       <ActivityItem 
+        expanded={true}
         setReplyActivity={setReplyActivity}
         setPopped={setPoppedReply}
         activity={activity} 
@@ -68,7 +69,7 @@ export default function ActivityShowPage() {
         />
         <div className='activity_feed'>
           <div className='activity_feed_heading'>
-            <div className='title'>Home</div>
+            <div className='title'>Crud</div>
           </div>
           {el_activity}
           <Replies

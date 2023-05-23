@@ -5,10 +5,11 @@
   overflow: hidden;
 }
 
-a.activity_item {
-  text-decoration: none;
+.activity_item.clickable:hover {
+  cursor: pointer;
 }
-a.activity_item:hover {
+
+.activity_item.clickable:hover {
   background: rgba(255,255,255,0.15);
 }
 
