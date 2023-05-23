@@ -64,3 +64,11 @@
 .activity_item .activity_actions .action:hover .icon {
   fill: rgb(149,0,255);
 }
+
+
+.activity_item.expanded .activity_content {
+  display: flex;
+}
+.activity_item.expanded .activity_content .activity_identity{
+  flex-grow: 1;
+}

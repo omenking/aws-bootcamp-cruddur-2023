@@ -10,7 +10,6 @@ export function message_time_ago(value){
   const datetime = DateTime.fromISO(value, { zone: 'utc' })
   const created = datetime.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const now     = DateTime.now()
-  console.log('message_time_group',created,now)
   const diff_mins = now.diff(created, 'minutes').toObject().minutes;
   const diff_hours = now.diff(created, 'hours').toObject().hours;
 

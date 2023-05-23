@@ -1,0 +1,20 @@
+.back {
+  font-size: 24px;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  padding: 0px 16px;
+}
+
+.back:hover {
+  color: rgba(255,255,255,1)
+}
+
+.activity_feed_heading.flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.activity_feed_heading.flex .title{
+  flex-grow: 1
+}
