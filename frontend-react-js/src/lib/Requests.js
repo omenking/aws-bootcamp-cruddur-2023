@@ -29,7 +29,7 @@ async function request(method,url,payload_data,options){
     if (res.status === 200) {
       options.success(data)
     } else {
-      if (setErrors !== null){
+      if (options.setErrors !== null){
         options.setErrors(data)
       }
       console.log(res,data)
