@@ -52,4 +52,4 @@ for migration_file in migration_files:
         mod = importlib.import_module(module_name)
         print('=== rolling back: ',module_name)
         mod.migration.rollback()
-        set_last_successful_run(file_time)
+        set_last_successful_run(str(file_time))

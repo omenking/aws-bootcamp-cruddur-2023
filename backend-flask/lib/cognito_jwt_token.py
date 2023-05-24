@@ -3,6 +3,10 @@ import requests
 from jose import jwk, jwt
 from jose.exceptions import JOSEError
 from jose.utils import base64url_decode
+from functools import wraps, partial
+from flask import request, g
+import os
+from flask import current_app as app
 
 class FlaskAWSCognitoError(Exception):
   pass
@@ -112,3 +116,30 @@ class CognitoJwtToken:
 
         self.claims = claims 
         return claims
+
+from functools import wraps, partial
+
+def jwt_required(f=None, on_error=None):
+    if f is None:
+        return partial(jwt_required, on_error=on_error)
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        cognito_jwt_token = CognitoJwtToken(
+            user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"), 
+            user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"),
+            region=os.getenv("AWS_DEFAULT_REGION")
+        )
+        access_token = extract_access_token(request.headers)
+        try:
+            claims = cognito_jwt_token.verify(access_token)
+            # is this a bad idea using a global?
+            g.cognito_user_id = claims['sub']  # storing the user_id in the global g object
+        except TokenVerifyError as e:
+            # unauthenticated request
+            app.logger.debug(e)
+            if on_error:
+                return on_error(e)
+            return {}, 401
+        return f(*args, **kwargs)
+    return decorated_function

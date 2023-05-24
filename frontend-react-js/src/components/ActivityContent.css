@@ -15,6 +15,7 @@
   width: 60px;
   border-radius: 999px;
   flex-shrink: 0;
+  display: block;
 }
 
 .activity_content .activity_meta {
@@ -22,18 +23,30 @@
   justify-content: space-between;
 }
 
-.activity_content a.activity_identity {
+.activity_content .activity_identity {
   flex-grow: 1;
   text-decoration: none;
   font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.activity_content a.activity_identity .display_name {
+.activity_content .activity_identity a {
+  text-decoration: none;
+  display: block;
+  flex-shrink: 1;
+}
+
+.activity_content .activity_identity .display_name {
   font-weight: 800;
   color: #fff;
 }
+.activity_content .activity_identity .display_name:hover {
+  text-decoration: underline;
+}
 
-.activity_content  a.activity_identity .handle {
+.activity_content  .activity_identity .handle {
   color: rgb(255,255,255,0.5);
 }
 

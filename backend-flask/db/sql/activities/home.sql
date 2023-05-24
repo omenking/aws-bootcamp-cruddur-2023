@@ -6,7 +6,6 @@ SELECT
   activities.replies_count,
   activities.reposts_count,
   activities.likes_count,
-  activities.reply_to_activity_uuid,
   activities.expires_at,
   activities.created_at
 FROM public.activities
