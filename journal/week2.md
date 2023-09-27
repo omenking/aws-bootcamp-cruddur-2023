@@ -299,5 +299,14 @@ def rollbar_test():
     return "Hello World!"
 ```
 
-
 [Rollbar Flask Example](https://github.com/rollbar/rollbar-flask-example/blob/master/hello.py)
+
+
+## [Note] Changes to Rollbar
+
+During the original bootcamp cohort, there was a newer version of flask.
+This resulted in rollback implementation breaking due to a change is the flask api.
+
+If you notice rollbar is not tracking, utilize the code from this file:
+
+https://github.com/omenking/aws-bootcamp-cruddur-2023/blob/week-x/backend-flask/lib/rollbar.py
