@@ -1,1 +1,5 @@
+aws/dist/*
+aws/install
+aws/README.md
+aws/THIRD_PARTY_LICENSES
 docker/dynamodb/*
